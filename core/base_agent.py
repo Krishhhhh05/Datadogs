@@ -3,6 +3,7 @@ import os
 from typing import Any, Dict, Optional
 import anthropic
 import braintrust
+from braintrust import wrap_anthropic
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -25,7 +26,7 @@ class BaseAgent:
         self.name = name
         self.role = role
         self.model = model
-        self.client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        self.client = wrap_anthropic(anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY")))
         self.credibility_score = 1.0  # Initial perfect score
 
     @braintrust.traced(name="agent_call")
