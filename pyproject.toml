@@ -11,6 +11,8 @@ dependencies = [
     "typing-extensions>=4.0.0",
     "flask>=3.0.0",
     "flask-cors>=4.0.0",
+    "pytrends",
+    "pandas",
 ]
 
 [project.optional-dependencies]

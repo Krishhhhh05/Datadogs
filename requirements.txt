@@ -4,3 +4,5 @@ pydantic
 typing-extensions
 flask
 flask-cors
+pytrends
+pandas
