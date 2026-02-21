@@ -496,11 +496,123 @@ function displayValidation(validation) {
         html += `</div>`;
     }
 
+    // ── Google Trends: Market Keywords ─────────────────────────────────
+    const marketTrends = validation?.market?.google_trends;
+    if (marketTrends && marketTrends.data) {
+        html += `<div class="info-card"><h4>🔍 Google Trends — Market Search Interest <span class="badge-live">Live via pytrends</span></h4>
+            <p class="chart-explain">📖 <strong>What this shows:</strong> Weekly search interest (0–100 scale) over the past 12 months for keywords related to your product idea. A score of 100 = peak popularity. <strong>Rising trends</strong> indicate growing market demand; <strong>flat or declining trends</strong> may signal a saturated or shrinking market.</p>
+        </div>`;
+
+        setTimeout(() => {
+            const ctx = document.createElement('canvas');
+            const container = document.getElementById('validationCharts');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'chart-wrapper';
+            wrapper.innerHTML = '<h5>Market Keyword Search Trends (12-Month)</h5>';
+            wrapper.appendChild(ctx);
+            const caption = document.createElement('p');
+            caption.className = 'chart-caption';
+            caption.textContent = '↑ Higher values = more search interest. Compare keywords to spot which market segments are gaining traction vs fading.';
+            wrapper.appendChild(caption);
+            container.appendChild(wrapper);
+
+            const keywords = marketTrends.keywords;
+            const trendData = marketTrends.data;
+            const maxLen = Math.max(...keywords.map(k => (trendData[k] || []).length));
+            const labels = Array.from({ length: maxLen }, (_, i) => `W${i + 1}`);
+            const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+
+            const datasets = keywords.map((kw, i) => ({
+                label: kw,
+                data: trendData[kw] || [],
+                borderColor: colors[i % colors.length],
+                backgroundColor: colors[i % colors.length] + '22',
+                tension: 0.3, borderWidth: 2, pointRadius: 0, fill: true,
+            }));
+
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 12 } },
+                        y: {
+                            min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' },
+                            title: { display: true, text: 'Search Interest (0–100)', color: '#94a3b8' }
+                        },
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { color: '#cbd5e1', font: { size: 10 } } },
+                        title: { display: false },
+                    },
+                },
+            });
+            activeCharts.push(chart);
+        }, 60);
+    }
+
+    // ── Google Trends: Competitor Search Interest ─────────────────────
+    const compTrends = validation?.competitors?.competitor_trends;
+    if (compTrends && compTrends.data) {
+        html += `<div class="info-card"><h4>🔍 Google Trends — Competitor Search Interest <span class="badge-live">Live via pytrends</span></h4>
+            <p class="chart-explain">📖 <strong>What this shows:</strong> How often each competitor name is searched on Google over the past year. <strong>Dominant lines</strong> indicate stronger brand awareness. If a competitor's trend is rising sharply, they may be gaining market share. A declining trend could signal opportunity.</p>
+        </div>`;
+
+        setTimeout(() => {
+            const ctx = document.createElement('canvas');
+            const container = document.getElementById('validationCharts');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'chart-wrapper';
+            wrapper.innerHTML = '<h5>Competitor Brand Awareness Trends (12-Month)</h5>';
+            wrapper.appendChild(ctx);
+            const caption = document.createElement('p');
+            caption.className = 'chart-caption';
+            caption.textContent = '↑ Compare competitor search interest to gauge relative brand strength and market presence.';
+            wrapper.appendChild(caption);
+            container.appendChild(wrapper);
+
+            const keywords = compTrends.keywords;
+            const trendData = compTrends.data;
+            const maxLen = Math.max(...keywords.map(k => (trendData[k] || []).length));
+            const labels = Array.from({ length: maxLen }, (_, i) => `W${i + 1}`);
+            const colors = ['#ec4899', '#06b6d4', '#f97316', '#14b8a6', '#a855f7'];
+
+            const datasets = keywords.map((kw, i) => ({
+                label: kw,
+                data: trendData[kw] || [],
+                borderColor: colors[i % colors.length],
+                backgroundColor: 'transparent',
+                tension: 0.3, borderWidth: 2, pointRadius: 0,
+            }));
+
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 12 } },
+                        y: {
+                            min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' },
+                            title: { display: true, text: 'Search Interest (0–100)', color: '#94a3b8' }
+                        },
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { color: '#cbd5e1', font: { size: 10 } } },
+                    },
+                },
+            });
+            activeCharts.push(chart);
+        }, 70);
+    }
+
     // ── YFinance Competitor Financials Section ────────────────────────
     const compFin = validation?.competitors?.competitor_financials;
     if (compFin && compFin.length > 0) {
         // Stats card
         html += `<div class="info-card"><h4>📈 Competitor Financials <span class="badge-live">Live via Yahoo Finance</span></h4>
+            <p class="chart-explain">📖 <strong>What this shows:</strong> Real-time financial data for publicly traded competitors. <strong>Market Cap</strong> = total company valuation. <strong>Revenue</strong> = annual income. <strong>Profit Margins</strong> = efficiency (higher is better). <strong>P/E Ratio</strong> = price relative to earnings (high P/E = market expects growth). <strong>Beta</strong> = stock volatility vs market (>1 = more volatile).</p>
             <div class="comp-fin-grid">`;
         compFin.forEach(c => {
             html += `<div class="comp-fin-card">
@@ -529,8 +641,14 @@ function displayValidation(validation) {
             if (mcData.length > 0) {
                 const ctx1 = document.createElement('canvas');
                 const w1 = document.createElement('div');
-                w1.className = 'chart-wrapper'; w1.innerHTML = '<h5>Market Cap Comparison</h5>';
-                w1.appendChild(ctx1); chartContainer.appendChild(w1);
+                w1.className = 'chart-wrapper';
+                w1.innerHTML = '<h5>Market Cap Comparison</h5>';
+                w1.appendChild(ctx1);
+                const cap1 = document.createElement('p');
+                cap1.className = 'chart-caption';
+                cap1.textContent = '📖 Market capitalization = share price × total shares. Larger bars indicate bigger companies, giving a sense of competitive scale.';
+                w1.appendChild(cap1);
+                chartContainer.appendChild(w1);
                 const mcChart = new Chart(ctx1, {
                     type: 'bar',
                     data: {
@@ -558,8 +676,14 @@ function displayValidation(validation) {
             if (rvData.length > 0) {
                 const ctx2 = document.createElement('canvas');
                 const w2 = document.createElement('div');
-                w2.className = 'chart-wrapper'; w2.innerHTML = '<h5>Revenue & Profit Margin</h5>';
-                w2.appendChild(ctx2); chartContainer.appendChild(w2);
+                w2.className = 'chart-wrapper';
+                w2.innerHTML = '<h5>Revenue & Profit Margin</h5>';
+                w2.appendChild(ctx2);
+                const cap2 = document.createElement('p');
+                cap2.className = 'chart-caption';
+                cap2.textContent = '📖 Bars = annual revenue ($B). Green line = profit margin (%). High revenue + high margin = a well-run, profitable competitor.';
+                w2.appendChild(cap2);
+                chartContainer.appendChild(w2);
                 const rvChart = new Chart(ctx2, {
                     data: {
                         labels: rvData.map(c => c.symbol),
@@ -592,9 +716,14 @@ function displayValidation(validation) {
             if (histData.length > 0) {
                 const ctx3 = document.createElement('canvas');
                 const w3 = document.createElement('div');
-                w3.className = 'chart-wrapper'; w3.innerHTML = '<h5>1-Year Stock Price (Market Proxy)</h5>';
-                w3.appendChild(ctx3); chartContainer.appendChild(w3);
-                // Use dates from the longest dataset as labels
+                w3.className = 'chart-wrapper';
+                w3.innerHTML = '<h5>1-Year Stock Price History</h5>';
+                w3.appendChild(ctx3);
+                const cap3 = document.createElement('p');
+                cap3.className = 'chart-caption';
+                cap3.textContent = '📖 Stock price serves as a market proxy. Rising prices indicate investor confidence; sharp drops may signal business challenges. Compare trends to identify which competitors are gaining momentum.';
+                w3.appendChild(cap3);
+                chartContainer.appendChild(w3);
                 const longest = histData.reduce((a, b) => a.priceHistory.length > b.priceHistory.length ? a : b);
                 const dateLabels = longest.priceHistory.map(p => p.date);
                 const colors = ['#667eea', '#10b981', '#f59e0b', '#ef4444'];

@@ -50,9 +50,6 @@ class MarketAgent(BaseAgent):
         # 3. Final Analysis
         trends_context = ""
         if trends_data:
-            # We don't want to pass huge arrays to the LLM. Let's just pass the raw numbers or a summary.
-            # Passing a summarized version is best, but raw data is fine for small timeframes.
-            # To keep it simple, we pass the dictionary of {keyword: [values]}
             trends_context = f"\n\nGoogle Trends Search Interest (past 12 months) for {keywords}:\n{json.dumps(trends_data)[:1000]}... (data truncated)"
 
         system_prompt = (
@@ -63,7 +60,16 @@ class MarketAgent(BaseAgent):
             "CRITICAL: You must output a structured JSON array for TAM, SAM, and SOM under the key `market_size`, where each object has `label` (TAM/SAM/SOM) and `value` (numeric estimate). Keep text explanations extremely concise."
         )
         user_prompt = f"Product Context: {product_context}{trends_context}"
-        return self.call_groq(system_prompt, user_prompt)
+        result = self.call_groq(system_prompt, user_prompt)
+
+        # 4. Merge raw trends data for frontend charting (bypasses LLM)
+        if trends_data:
+            result["google_trends"] = {
+                "keywords": keywords,
+                "data": trends_data,
+            }
+
+        return result
 
 class CustomerAgent(BaseAgent):
     def __init__(self):
@@ -158,5 +164,10 @@ class CompetitiveAgent(BaseAgent):
         # 4. Merge raw yfinance data directly into result (bypasses LLM — real data)
         if competitor_financials:
             result["competitor_financials"] = competitor_financials
+        if trends_data:
+            result["competitor_trends"] = {
+                "keywords": competitors,
+                "data": trends_data,
+            }
 
         return result
