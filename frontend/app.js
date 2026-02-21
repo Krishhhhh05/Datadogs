@@ -372,7 +372,9 @@ function displayValidation(validation) {
 
         // Fallback: render all data if no specific keys matched
         if (!hasSpecificContent) {
-            html += renderObject(market);
+            const displayMarket = { ...market };
+            delete displayMarket.google_trends;
+            html += renderObject(displayMarket);
         }
         html += `</div>`;
     }
@@ -491,6 +493,7 @@ function displayValidation(validation) {
             // Fallback: render all competitor data if no structured array found
             const fallbackData = { ...competitors };
             delete fallbackData.competitor_financials; // Rendered separately below
+            delete fallbackData.comp_trends; // Hide raw trend arrays
             html += renderObject(fallbackData);
         }
         html += `</div>`;
@@ -867,7 +870,7 @@ function displayFinancial(financial) {
         }
         if (rm.ltv_assumptions) {
             hasRevenueContent = true;
-            html += `<div class="sub-section"><h5>LTV Assumptions</h5><p>${rm.ltv_assumptions}</p></div>`;
+            html += `<div class="sub-section"><h5>LTV Assumptions</h5><div class="mt-2 text-sm text-gray-400">${renderValue(rm.ltv_assumptions)}</div></div>`;
         }
         // Fallback
         if (!hasRevenueContent) {

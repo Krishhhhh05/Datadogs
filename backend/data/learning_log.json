@@ -556,5 +556,67 @@
         "change": -0.0092
       }
     }
+  },
+  {
+    "run_id": 10,
+    "timestamp": "2026-02-21T14:45:23.056470",
+    "product_idea_summary": "Product Name: new\nDescription: p\nIndustry: EdTech\nBusiness Model: Marketplace\nTarget Audience: B2B (SMBs)\nFunding Stage:...",
+    "decision": "NO-GO",
+    "agents": {
+      "Market Analyzer": {
+        "credibility": 0.8837,
+        "previous": 0.9014,
+        "normalized_error": 0.2757,
+        "change": -0.0177
+      },
+      "Customer Insight Specialist": {
+        "credibility": 0.8929,
+        "previous": 0.8929,
+        "normalized_error": 0.1071,
+        "change": 0.0
+      },
+      "Competitive Intelligence lead": {
+        "credibility": 0.8936,
+        "previous": 0.9133,
+        "normalized_error": 0.284,
+        "change": -0.0197
+      },
+      "Revenue Architect": {
+        "credibility": 0.9074,
+        "previous": 0.9249,
+        "normalized_error": 0.2501,
+        "change": -0.0175
+      },
+      "Pricing Strategist": {
+        "credibility": 0.8872,
+        "previous": 0.877,
+        "normalized_error": 0.0208,
+        "change": 0.0102
+      },
+      "Risk Assessment Officer": {
+        "credibility": 0.9155,
+        "previous": 0.9082,
+        "normalized_error": 0.0192,
+        "change": 0.0073
+      },
+      "GTM Strategist": {
+        "credibility": 0.8908,
+        "previous": 0.9042,
+        "normalized_error": 0.2295,
+        "change": -0.0134
+      },
+      "Product Roadmap lead": {
+        "credibility": 0.898,
+        "previous": 0.9083,
+        "normalized_error": 0.1947,
+        "change": -0.0103
+      },
+      "Launch Director": {
+        "credibility": 0.8996,
+        "previous": 0.9204,
+        "normalized_error": 0.288,
+        "change": -0.0208
+      }
+    }
   }
 ]
