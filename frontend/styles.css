@@ -476,6 +476,153 @@ textarea:focus {
     font-size: 0.9rem;
 }
 
+/* ── Generic helpers ──────────────────────────────────────────────── */
+.no-data { color: var(--text-muted); font-style: italic; padding: 1rem 0; }
+.card-context { color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.7; }
+.sub-section { margin-top: 1.25rem; }
+.sub-section h5 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.75rem; }
+
+/* ── Tag pills ────────────────────────────────────────────────────── */
+.tag-section { margin-bottom: 0.75rem; }
+.tag-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.4rem; }
+.tag { display: inline-block; padding: 0.2rem 0.65rem; border-radius: 20px;
+    font-size: 0.78rem; font-weight: 500; margin: 0.2rem 0.2rem 0 0; }
+.tag-red    { background: rgba(239,68,68,0.15);   color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+.tag-green  { background: rgba(16,185,129,0.15);  color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+.tag-blue   { background: rgba(59,130,246,0.15);  color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+.tag-purple { background: rgba(139,92,246,0.15);  color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
+
+/* ── Metric pills (predictive analytics row) ─────────────────────── */
+.metrics-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.metric-pill { background: var(--bg-tertiary); border: 1px solid var(--border);
+    border-radius: 20px; padding: 0.3rem 0.85rem; font-size: 0.82rem; color: var(--text-secondary); }
+
+/* ── Market trend cards ───────────────────────────────────────────── */
+.trend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.trend-card { background: var(--bg-tertiary); border-radius: 10px; padding: 1rem;
+    border: 1px solid var(--border); }
+.trend-name { font-weight: 700; color: var(--text-primary); margin-bottom: 0.35rem; font-size: 0.95rem; }
+.trend-badge { display: inline-block; background: rgba(102,126,234,0.2); color: var(--primary);
+    border-radius: 20px; padding: 0.15rem 0.6rem; font-size: 0.75rem; font-weight: 700;
+    margin-bottom: 0.5rem; }
+.trend-analysis { color: var(--text-secondary); font-size: 0.85rem; margin: 0; line-height: 1.55; }
+
+/* ── Persona cards ────────────────────────────────────────────────── */
+.persona-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.persona-card { background: var(--bg-tertiary); border-radius: 12px; padding: 1.25rem;
+    border: 1px solid var(--border); }
+.persona-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.persona-name { font-weight: 700; font-size: 1rem; color: var(--text-primary); }
+.persona-type-badge { font-size: 0.7rem; background: rgba(102,126,234,0.2); color: var(--primary);
+    border-radius: 20px; padding: 0.15rem 0.6rem; font-weight: 600; }
+.demo-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; font-size: 0.8rem;
+    color: var(--text-muted); }
+
+/* ── Competitor cards ─────────────────────────────────────────────── */
+.comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.comp-card { background: var(--bg-tertiary); border-radius: 12px; padding: 1.25rem;
+    border: 1px solid var(--border); }
+.comp-name { font-weight: 700; font-size: 1rem; color: var(--text-primary); margin-bottom: 0.4rem; }
+.comp-desc { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.75rem; line-height: 1.5; }
+.sw-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.sw-col ul { list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: var(--text-secondary); }
+.sw-col ul li { margin-bottom: 0.3rem; padding-left: 0.5rem; }
+.sw-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem; }
+.sw-label-green { color: var(--success); }
+.sw-label-red   { color: var(--error); }
+
+/* ── Revenue metric boxes ─────────────────────────────────────────── */
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+.metric-box { background: var(--bg-tertiary); border-radius: 10px; padding: 1.1rem;
+    border: 1px solid var(--border); text-align: center; }
+.metric-val { font-size: 1.5rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.metric-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem;
+    text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── Pricing tiers ────────────────────────────────────────────────── */
+.tier-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+.tier-card { background: var(--bg-tertiary); border: 2px solid var(--border);
+    border-radius: 14px; padding: 1.5rem; text-align: center; transition: all 0.2s; }
+.tier-card:hover { border-color: var(--primary); }
+.tier-featured { border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(102,126,234,0.12), rgba(118,75,162,0.12)); }
+.tier-name { font-weight: 700; font-size: 0.9rem; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.5rem; }
+.tier-price { font-size: 2rem; font-weight: 800; color: var(--text-primary); }
+.tier-price span { font-size: 0.9rem; color: var(--text-muted); font-weight: 400; }
+.tier-features { list-style: none; padding: 0; margin: 1rem 0 0; text-align: left; }
+.tier-features li { font-size: 0.82rem; color: var(--text-secondary); padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border); }
+.tier-features li:last-child { border-bottom: none; }
+.tier-features li::before { content: "✓ "; color: var(--success); font-weight: 700; }
+
+/* ── Risk items ───────────────────────────────────────────────────── */
+.risk-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
+.risk-item { background: var(--bg-tertiary); border-radius: 10px; padding: 1rem;
+    border-left: 4px solid var(--border); }
+.risk-high   { border-left-color: var(--error); }
+.risk-medium { border-left-color: var(--warning); }
+.risk-low    { border-left-color: var(--success); }
+.risk-desc { color: var(--text-secondary); font-size: 0.9rem; margin: 0 0 0.5rem; }
+.risk-metrics { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.risk-badge { font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem;
+    border-radius: 20px; background: var(--bg-secondary); color: var(--text-muted); }
+.risk-badge-high   { background: rgba(239,68,68,0.2);   color: #f87171; }
+.risk-badge-medium { background: rgba(245,158,11,0.2);  color: #fbbf24; }
+.risk-badge-low    { background: rgba(16,185,129,0.2);  color: #34d399; }
+.mitigation-box { background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 10px; padding: 1rem; margin-top: 0.5rem; }
+.mitigation-box strong { display: block; color: var(--success); font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+
+/* ── GTM: channels & funnel ──────────────────────────────────────── */
+.channel-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.channel-chip { background: rgba(102,126,234,0.15); color: var(--primary);
+    border: 1px solid rgba(102,126,234,0.3); border-radius: 20px;
+    padding: 0.3rem 0.85rem; font-size: 0.82rem; font-weight: 600; }
+
+.funnel { display: flex; flex-direction: column; gap: 0.5rem; }
+.funnel-stage { display: flex; align-items: center; gap: 0.75rem;
+    background: var(--bg-tertiary); border-radius: 8px; padding: 0.65rem 1rem;
+    font-size: 0.9rem; color: var(--text-secondary); }
+.funnel-num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+
+/* ── Feature roadmap ─────────────────────────────────────────────── */
+.feature-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.feature-item { display: flex; align-items: flex-start; gap: 1rem;
+    background: var(--bg-tertiary); border-radius: 10px; padding: 1rem;
+    border: 1px solid var(--border); }
+.feature-priority { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center;
+    justify-content: center; font-size: 0.75rem; font-weight: 800; flex-shrink: 0; }
+.priority-high { background: rgba(239,68,68,0.2);   color: #f87171; }
+.priority-med  { background: rgba(245,158,11,0.2);  color: #fbbf24; }
+.priority-low  { background: rgba(16,185,129,0.2);  color: #34d399; }
+.feature-body { flex: 1; }
+.feature-name { font-weight: 700; color: var(--text-primary); font-size: 0.95rem; }
+.feature-desc { color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem; line-height: 1.5; }
+
+/* ── Agents tab grid ─────────────────────────────────────────────── */
+.agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+.agent-card2 { background: var(--bg-tertiary); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1rem; }
+.agent-card2-pending { opacity: 0.55; }
+.agent2-header { display: flex; align-items: flex-start; gap: 0.75rem; }
+.agent2-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+.agent2-name { font-weight: 700; color: var(--text-primary); font-size: 0.95rem; }
+.agent2-role { color: var(--text-muted); font-size: 0.78rem; margin-top: 0.15rem; }
+.agent2-status { margin-left: auto; font-size: 1.1rem; flex-shrink: 0; }
+.agent2-keys { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.75rem; padding-top: 0.75rem;
+    border-top: 1px solid var(--border); }
+.agent-key { background: rgba(102,126,234,0.12); color: var(--primary); font-size: 0.7rem;
+    padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600; }
+
 /* Master Synthesis Card */
 .synthesis-card {
     background: linear-gradient(135deg, #1a1f35, #1e293b);

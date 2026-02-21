@@ -223,119 +223,279 @@ function displayValidation(validation) {
     const tab = document.getElementById('validationTab');
     let html = '';
 
-    // Market Analysis
-    if (validation.market) {
+    // ── Market Analysis ──────────────────────────────────────────────
+    const market = validation?.market;
+    if (market) {
+        const mta = market.market_trend_analysis || market;
         html += `<div class="info-card">
-            <h4>📊 Market Analysis</h4>
-            ${renderObject(validation.market)}
-        </div>`;
+            <h4>📊 Market Analysis</h4>`;
+        if (mta.context) html += `<p class="card-context">${mta.context}</p>`;
+
+        if (mta.market_conditions?.length) {
+            html += `<div class="sub-section"><h5>Market Conditions</h5><div class="trend-grid">`;
+            mta.market_conditions.forEach(mc => {
+                html += `<div class="trend-card">
+                    <div class="trend-name">${mc.trend || ''}</div>
+                    ${mc.growth_rate ? `<span class="trend-badge">${mc.growth_rate}</span>` : ''}
+                    ${mc.analysis ? `<p class="trend-analysis">${mc.analysis}</p>` : ''}
+                </div>`;
+            });
+            html += `</div></div>`;
+        }
+
+        if (mta.predictive_analytics) {
+            const pa = mta.predictive_analytics;
+            html += `<div class="sub-section"><h5>Predictive Analytics</h5>
+                <div class="metrics-row">
+                    ${pa.forecast     ? `<div class="metric-pill">${pa.forecast}</div>` : ''}
+                    ${pa.probability  !== undefined ? `<div class="metric-pill">Probability: ${Math.round(pa.probability * 100)}%</div>` : ''}
+                    ${pa.confidence_level !== undefined ? `<div class="metric-pill">Confidence: ${pa.confidence_level}%</div>` : ''}
+                </div></div>`;
+        }
+        html += `</div>`;
     }
 
-    // Customer Insights
-    if (validation.customer) {
-        html += `<div class="info-card">
-            <h4>👥 Customer Insights</h4>
-            ${renderObject(validation.customer)}
-        </div>`;
+    // ── Customer Personas ─────────────────────────────────────────────
+    const customer = validation?.customer;
+    if (customer) {
+        const personas = customer.customers || [];
+        html += `<div class="info-card"><h4>👥 Customer Personas</h4><div class="persona-grid">`;
+        personas.forEach(c => {
+            html += `<div class="persona-card">
+                <div class="persona-header">
+                    <span class="persona-name">${c.name || 'Persona'}</span>
+                    ${c.persona_type ? `<span class="persona-type-badge">${c.persona_type}</span>` : ''}
+                </div>
+                ${c.demographics ? `<div class="demo-row">
+                    ${c.demographics.age        ? `<span>🎂 ${c.demographics.age}</span>`        : ''}
+                    ${c.demographics.income     ? `<span>💼 ${c.demographics.income}</span>`     : ''}
+                    ${c.demographics.occupation ? `<span>🏢 ${c.demographics.occupation}</span>` : ''}
+                </div>` : ''}
+                ${c.pain_points?.length ? `<div class="tag-section">
+                    <div class="tag-label">Pain Points</div>
+                    ${c.pain_points.map(p => `<span class="tag tag-red">${p}</span>`).join('')}
+                </div>` : ''}
+                ${c.goals?.length ? `<div class="tag-section">
+                    <div class="tag-label">Goals</div>
+                    ${c.goals.map(g => `<span class="tag tag-green">${g}</span>`).join('')}
+                </div>` : ''}
+            </div>`;
+        });
+        html += `</div></div>`;
     }
 
-    // Competitive Analysis
-    if (validation.competitors) {
-        html += `<div class="info-card">
-            <h4>🎯 Competitive Analysis</h4>
-            ${renderObject(validation.competitors)}
-        </div>`;
+    // ── Competitive Analysis ─────────────────────────────────────────
+    const competitors = validation?.competitors;
+    if (competitors) {
+        const comps = competitors.competitors || [];
+        html += `<div class="info-card"><h4>🎯 Competitive Analysis</h4><div class="comp-grid">`;
+        comps.forEach(c => {
+            html += `<div class="comp-card">
+                <div class="comp-name">${c.name || 'Competitor'}</div>
+                ${c.description ? `<p class="comp-desc">${c.description}</p>` : ''}
+                <div class="sw-row">
+                    ${c.strengths?.length ? `<div class="sw-col">
+                        <div class="sw-label sw-label-green">✅ Strengths</div>
+                        <ul>${c.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+                    </div>` : ''}
+                    ${c.weaknesses?.length ? `<div class="sw-col">
+                        <div class="sw-label sw-label-red">❌ Weaknesses</div>
+                        <ul>${c.weaknesses.map(w => `<li>${w}</li>`).join('')}</ul>
+                    </div>` : ''}
+                </div>
+            </div>`;
+        });
+        html += `</div></div>`;
     }
 
-    tab.innerHTML = html;
+    tab.innerHTML = html || '<p class="no-data">No validation data available.</p>';
 }
 
 function displayFinancial(financial) {
     const tab = document.getElementById('financialTab');
     let html = '';
 
-    // Revenue
-    if (financial.revenue) {
-        html += `<div class="info-card">
-            <h4>💰 Revenue Projections</h4>
-            ${renderObject(financial.revenue)}
+    // ── Revenue Model ─────────────────────────────────────────────────
+    const revenue = financial?.revenue;
+    if (revenue) {
+        const rm = revenue.revenue_model || revenue;
+        html += `<div class="info-card"><h4>💰 Revenue Model</h4>
+            <div class="metrics-grid">
+                ${rm.subscription_revenue !== undefined ? `<div class="metric-box">
+                    <div class="metric-val">$${Number(rm.subscription_revenue).toLocaleString()}</div>
+                    <div class="metric-label">Subscription Revenue</div>
+                </div>` : ''}
+                ${rm.total_revenue !== undefined ? `<div class="metric-box">
+                    <div class="metric-val">$${Number(rm.total_revenue).toLocaleString()}</div>
+                    <div class="metric-label">Total Revenue</div>
+                </div>` : ''}
+                ${rm.growth_rate ? `<div class="metric-box">
+                    <div class="metric-val">${rm.growth_rate}</div>
+                    <div class="metric-label">Growth Rate</div>
+                </div>` : ''}
+                ${rm.margin !== undefined ? `<div class="metric-box">
+                    <div class="metric-val">${rm.margin}%</div>
+                    <div class="metric-label">Margin</div>
+                </div>` : ''}
+            </div>
         </div>`;
     }
 
-    // Pricing
-    if (financial.pricing) {
-        html += `<div class="info-card">
-            <h4>💵 Pricing Strategy</h4>
-            ${renderObject(financial.pricing)}
-        </div>`;
+    // ── Pricing Tiers ─────────────────────────────────────────────────
+    const pricing = financial?.pricing;
+    if (pricing) {
+        const tiers = pricing.pricing_tiers || [];
+        html += `<div class="info-card"><h4>💵 Pricing Tiers</h4><div class="tier-grid">`;
+        tiers.forEach((tier, i) => {
+            html += `<div class="tier-card${i === 1 ? ' tier-featured' : ''}">
+                <div class="tier-name">${tier.name || 'Tier'}</div>
+                <div class="tier-price">$${tier.monthly_fee}<span>/mo</span></div>
+                ${tier.features?.length ? `<ul class="tier-features">
+                    ${tier.features.map(f => `<li>${f}</li>`).join('')}
+                </ul>` : ''}
+            </div>`;
+        });
+        html += `</div></div>`;
     }
 
-    // Risk
-    if (financial.risk) {
-        html += `<div class="info-card">
-            <h4>⚠️ Risk Assessment</h4>
-            ${renderObject(financial.risk)}
-        </div>`;
+    // ── Risk Assessment ───────────────────────────────────────────────
+    const risk = financial?.risk;
+    if (risk) {
+        const ra = risk.risk_analysis || risk;
+        html += `<div class="info-card"><h4>⚠️ Risk Assessment</h4>`;
+
+        if (ra.potential_risks?.length) {
+            html += `<div class="risk-list">`;
+            ra.potential_risks.forEach(r => {
+                const impact = r.impact || 0;
+                const prob   = r.probability !== undefined ? Math.round(r.probability * 100) : 0;
+                const level  = impact >= 7 ? 'high' : impact >= 4 ? 'medium' : 'low';
+                html += `<div class="risk-item risk-${level}">
+                    <p class="risk-desc">${r.description || ''}</p>
+                    <div class="risk-metrics">
+                        <span class="risk-badge risk-badge-${level}">Impact ${impact}/10</span>
+                        <span class="risk-badge">Probability ${prob}%</span>
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+        }
+
+        if (ra.mitigation_strategy) {
+            html += `<div class="mitigation-box">
+                <strong>Mitigation Strategy</strong>
+                <div class="md-block">${marked.parse(ra.mitigation_strategy)}</div>
+            </div>`;
+        }
+        html += `</div>`;
     }
 
-    tab.innerHTML = html;
+    tab.innerHTML = html || '<p class="no-data">No financial data available.</p>';
 }
 
 function displayGTM(gtm) {
     const tab = document.getElementById('gtmTab');
     let html = '';
 
-    // Strategy
-    if (gtm.strategy) {
-        html += `<div class="info-card">
-            <h4>🚀 Go-to-Market Strategy</h4>
-            ${renderObject(gtm.strategy)}
-        </div>`;
+    // ── GTM Strategy ──────────────────────────────────────────────────
+    const strategy = gtm?.strategy;
+    if (strategy) {
+        const gs = strategy.gtm_strategy || strategy;
+        html += `<div class="info-card"><h4>🚀 Go-to-Market Strategy</h4>`;
+
+        if (gs.target_audience) {
+            const ta = gs.target_audience;
+            html += `<div class="sub-section"><h5>Target Audience</h5>`;
+            if (ta.demographics?.length) {
+                html += `<div class="tag-section"><div class="tag-label">Demographics</div>
+                    ${ta.demographics.map(d => `<span class="tag tag-blue">${d}</span>`).join('')}</div>`;
+            }
+            if (ta.psychographics?.length) {
+                html += `<div class="tag-section"><div class="tag-label">Psychographics</div>
+                    ${ta.psychographics.map(p => `<span class="tag tag-purple">${p}</span>`).join('')}</div>`;
+            }
+            html += `</div>`;
+        }
+
+        if (gs.marketing_channels?.length) {
+            html += `<div class="sub-section"><h5>Marketing Channels</h5>
+                <div class="channel-list">
+                    ${gs.marketing_channels.map(ch => `<span class="channel-chip">${ch}</span>`).join('')}
+                </div></div>`;
+        }
+
+        if (gs.funnel_stages?.length) {
+            html += `<div class="sub-section"><h5>Funnel Stages</h5>
+                <div class="funnel">
+                    ${gs.funnel_stages.map((stage, i) => `<div class="funnel-stage">
+                        <span class="funnel-num">${i + 1}</span>
+                        <span>${stage}</span>
+                    </div>`).join('')}
+                </div></div>`;
+        }
+        html += `</div>`;
     }
 
-    // Features
-    if (gtm.features) {
-        html += `<div class="info-card">
-            <h4>✨ Feature Priorities</h4>
-            ${renderObject(gtm.features)}
-        </div>`;
+    // ── Feature Roadmap ───────────────────────────────────────────────
+    const features = gtm?.features;
+    if (features) {
+        const roadmap = features.roadmap?.features || features.features || [];
+        html += `<div class="info-card"><h4>✨ Feature Roadmap</h4>
+            <div class="feature-list">`;
+        [...roadmap].sort((a, b) => (a.priority || 99) - (b.priority || 99)).forEach(f => {
+            const p = f.priority || '?';
+            const pClass = p <= 2 ? 'priority-high' : p <= 4 ? 'priority-med' : 'priority-low';
+            html += `<div class="feature-item">
+                <span class="feature-priority ${pClass}">P${p}</span>
+                <div class="feature-body">
+                    <div class="feature-name">${f.name || 'Feature'}</div>
+                    ${f.description ? `<div class="feature-desc">${f.description}</div>` : ''}
+                </div>
+            </div>`;
+        });
+        html += `</div></div>`;
     }
 
-    tab.innerHTML = html;
+    tab.innerHTML = html || '<p class="no-data">No GTM data available.</p>';
 }
 
 function displayAgents(results) {
     const tab = document.getElementById('agentsTab');
-    let html = '<h4 style="margin-bottom: 1.5rem;">🤖 AI Agent Performance</h4>';
 
-    // agents are embedded per-phase as keys; collect what we can
-    const agentMap = [
-        { name: 'Market Analyst',      phase: 'phase1_validation', key: 'market' },
-        { name: 'Customer Analyst',    phase: 'phase1_validation', key: 'customer' },
-        { name: 'Competitive Analyst', phase: 'phase1_validation', key: 'competitors' },
-        { name: 'Revenue Modeler',     phase: 'phase2_financial',  key: 'revenue' },
-        { name: 'Pricing Strategist',  phase: 'phase2_financial',  key: 'pricing' },
-        { name: 'Risk Assessor',       phase: 'phase2_financial',  key: 'risk' },
-        { name: 'GTM Strategist',      phase: 'phase3_gtm',        key: 'strategy' },
-        { name: 'Feature Planner',     phase: 'phase3_gtm',        key: 'features' },
-        { name: 'Launch Director',     phase: 'final_decision',    key: null },
-        { name: 'Master Orchestrator', phase: 'master_synthesis',  key: null },
+    const agents = [
+        { icon: '📊', name: 'Market Analyzer',            role: 'Market trends & conditions',   data: results.phase1_validation?.market },
+        { icon: '👥', name: 'Customer Insight Specialist', role: 'User personas & pain points',   data: results.phase1_validation?.customer },
+        { icon: '🎯', name: 'Competitive Intelligence',   role: 'Competitor benchmarking',       data: results.phase1_validation?.competitors },
+        { icon: '💰', name: 'Revenue Architect',          role: 'Subscription & revenue model',  data: results.phase2_financial?.revenue },
+        { icon: '💵', name: 'Pricing Strategist',         role: 'Pricing tiers & strategy',      data: results.phase2_financial?.pricing },
+        { icon: '⚠️', name: 'Risk Assessment Officer',    role: 'Financial risk analysis',       data: results.phase2_financial?.risk },
+        { icon: '🚀', name: 'GTM Strategist',             role: 'Go-to-market planning',         data: results.phase3_gtm?.strategy },
+        { icon: '✨', name: 'Product Roadmap Lead',       role: 'Feature prioritization',        data: results.phase3_gtm?.features },
+        { icon: '⚖️', name: 'Launch Director',            role: 'Final GO/NO-GO decision',       data: results.final_decision },
+        { icon: '🧠', name: 'Master Orchestrator',        role: 'Executive synthesis',           data: results.master_synthesis },
     ];
 
-    agentMap.forEach(a => {
-        const data = a.key ? results[a.phase]?.[a.key] : results[a.phase];
-        const status = data ? '✅ Complete' : '⏳ No data';
-        const statusClass = data ? 'status-complete' : 'status-pending';
-        html += `
-            <div class="agent-card">
-                <div class="agent-header">
-                    <span class="agent-name">${a.name}</span>
-                    <span class="credibility ${statusClass}">${status}</span>
+    let html = '<div class="agent-grid">';
+    agents.forEach(a => {
+        const done = !!a.data;
+        const keys = done ? Object.keys(a.data) : [];
+        const preview = done && keys.length
+            ? keys.slice(0, 3).map(k => `<span class="agent-key">${k.replace(/_/g, ' ')}</span>`).join('')
+            : '';
+
+        html += `<div class="agent-card2${done ? '' : ' agent-card2-pending'}">
+            <div class="agent2-header">
+                <span class="agent2-icon">${a.icon}</span>
+                <div>
+                    <div class="agent2-name">${a.name}</div>
+                    <div class="agent2-role">${a.role}</div>
                 </div>
-                <div class="agent-role">${a.phase.replace(/_/g, ' ')} → ${a.key || 'output'}</div>
+                <span class="agent2-status ${done ? 'status-complete' : 'status-pending'}">${done ? '✅' : '⏳'}</span>
             </div>
-        `;
+            ${preview ? `<div class="agent2-keys">${preview}</div>` : ''}
+        </div>`;
     });
+    html += '</div>';
 
     tab.innerHTML = html;
 }
