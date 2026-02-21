@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# LaunchOS Startup Script
-echo "🚀 Starting LaunchOS..."
+# DataDogs Startup Script
+echo "🐾 Starting DataDogs..."
 
 # Check if .env exists
 if [ ! -f .env ]; then
@@ -17,19 +17,33 @@ if grep -q "your_groq_api_key_here" .env; then
     exit 1
 fi
 
-# Check if uv is installed
-if ! command -v uv &> /dev/null; then
-    echo "📦 Installing uv..."
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    export PATH="$HOME/.cargo/bin:$PATH"
-fi
+# Kill any existing processes on ports 5000 and 5001
+echo "🧹 Cleaning up old processes..."
+lsof -ti:5001 | xargs kill -9 2>/dev/null
+lsof -ti:5000 | xargs kill -9 2>/dev/null
+sleep 1
 
-# Sync dependencies with uv
-echo "📦 Installing dependencies with uv..."
-uv sync
+# Load env
+export $(grep -v '^#' .env | xargs)
 
-# Start the server
-echo "✨ Starting LaunchOS server..."
-echo "🌐 Open http://localhost:5000 in your browser"
+# ── Start backend on port 5001 ──
+echo "⚙️  Starting backend on http://localhost:5001 ..."
+PYTHONPATH="$(pwd)" python3 backend/app.py &
+BACKEND_PID=$!
+sleep 2
+
+# ── Start frontend on port 5000 ──
+echo "🌐 Starting frontend on http://localhost:5000 ..."
+python3 -m http.server 5000 --directory frontend &
+FRONTEND_PID=$!
+
 echo ""
-uv run python backend/app.py
+echo "✅ DataDogs is running!"
+echo "   Frontend → http://localhost:5000/login.html"
+echo "   Backend  → http://localhost:5001"
+echo ""
+echo "Press Ctrl+C to stop both servers."
+
+# Wait and handle shutdown
+trap "echo ''; echo '🛑 Shutting down...'; kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; exit 0" INT
+wait

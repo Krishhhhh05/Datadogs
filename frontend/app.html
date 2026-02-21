@@ -2,256 +2,560 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DataDogs - AI Product Launch OS</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-        // Auth guard — redirect to login if not authenticated
-        if (!sessionStorage.getItem('datadogs_user')) {
-            window.location.href = 'login.html';
-        }
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataDogs — AI Product Launch Intelligence</title>
+  <meta name="description" content="DataDogs uses 9 specialized AI agents to analyze, validate, and give you a comprehensive GO/NO-GO recommendation for your product idea." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-row">
-                <div class="logo">
-                    <h1>🚀 DataDogs</h1>
-                </div>
-                <div class="user-badge" id="userBadge"></div>
+  <!-- Particle Background -->
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="container">
+
+    <!-- ── HEADER ── -->
+    <header class="header">
+      <div class="logo-badge">
+        <span class="badge-dot"></span>
+        <span>9 AI AGENTS ONLINE</span>
+      </div>
+      <div class="logo">
+        <h1>DataDogs</h1>
+        <div class="logo-sub">MULTI-AGENT PRODUCT INTELLIGENCE</div>
+      </div>
+      <p class="tagline">Submit your idea. Our AI war-room tears it apart — then hands you the game plan.</p>
+    </header>
+
+    <!-- ── WIZARD PROGRESS ── -->
+    <nav class="wizard-progress" id="wizardNav">
+      <div class="wizard-step active" data-step="0" id="wStep0" onclick="goStep(0)">
+        <div class="wizard-step-num">🎯</div>
+        <div class="wizard-step-label">Identity</div>
+      </div>
+      <div class="wizard-connector" id="wConn0"></div>
+      <div class="wizard-step" data-step="1" id="wStep1" onclick="goStep(1)">
+        <div class="wizard-step-num">📊</div>
+        <div class="wizard-step-label">Market</div>
+      </div>
+      <div class="wizard-connector" id="wConn1"></div>
+      <div class="wizard-step" data-step="2" id="wStep2" onclick="goStep(2)">
+        <div class="wizard-step-num">💬</div>
+        <div class="wizard-step-label">Vision</div>
+      </div>
+      <div class="wizard-connector" id="wConn2"></div>
+      <div class="wizard-step" data-step="3" id="wStep3" onclick="goStep(3)">
+        <div class="wizard-step-num">🚀</div>
+        <div class="wizard-step-label">Launch</div>
+      </div>
+    </nav>
+
+    <!-- ── INPUT PANELS ── -->
+    <section class="input-section" id="inputSection">
+
+      <!-- XP Bar -->
+      <div class="xp-row">
+        <span class="xp-label">⚡ XP</span>
+        <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+        <span class="xp-val" id="xpVal">0 / 400</span>
+      </div>
+
+      <!-- Panel 0: Product Identity -->
+      <div class="panel active" id="panel0">
+        <div class="panel-header">
+          <span class="panel-icon">🎯</span>
+          <div>
+            <div class="panel-title">Product Identity</div>
+            <div class="panel-subtitle">Step 1 of 4 — Name your creation</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="productName">Product Name <span class="field-xp">50 XP</span></label>
+          <input type="text" id="productName" placeholder="e.g. NeuraVault, PulseOS, Gridify..." />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="industry">Industry <span class="field-xp">50 XP</span></label>
+            <select id="industry">
+              <option value="">Select sector...</option>
+              <option>FinTech</option>
+              <option>HealthTech</option>
+              <option>EdTech</option>
+              <option>E-commerce</option>
+              <option>SaaS / B2B Software</option>
+              <option>Consumer App</option>
+              <option>CleanTech</option>
+              <option>AgriTech</option>
+              <option>Real Estate</option>
+              <option>Logistics / Supply Chain</option>
+              <option>AI / Deep Tech</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="businessModel">Business Model <span class="field-xp">50 XP</span></label>
+            <select id="businessModel">
+              <option value="">Select model...</option>
+              <option>SaaS Subscription</option>
+              <option>Marketplace</option>
+              <option>E-commerce / D2C</option>
+              <option>Freemium</option>
+              <option>Usage-based</option>
+              <option>Hardware + Software</option>
+              <option>Franchise / Licensing</option>
+              <option>Advertising</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-next" id="next0" onclick="goStep(1)">Next Mission &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Panel 1: Market Context -->
+      <div class="panel" id="panel1">
+        <div class="panel-header">
+          <span class="panel-icon">📊</span>
+          <div>
+            <div class="panel-title">Market Context</div>
+            <div class="panel-subtitle">Step 2 of 4 — Define your battlefield</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="targetAudience">Target Audience <span class="field-xp">50 XP</span></label>
+            <select id="targetAudience">
+              <option value="">Select audience...</option>
+              <option>B2C (Consumers)</option>
+              <option>B2B (SMBs)</option>
+              <option>B2B (Enterprise)</option>
+              <option>B2B2C</option>
+              <option>Government / Public Sector</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fundingStage">Funding Stage <span class="field-xp">50 XP</span></label>
+            <select id="fundingStage">
+              <option value="">Select stage...</option>
+              <option>Bootstrapped</option>
+              <option>Pre-seed</option>
+              <option>Seed</option>
+              <option>Series A</option>
+              <option>Series B+</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="geography">Geographic Focus <span class="field-xp">50 XP</span></label>
+            <select id="geography">
+              <option value="">Select region...</option>
+              <option>North America</option>
+              <option>Europe</option>
+              <option>Asia-Pacific</option>
+              <option>Latin America</option>
+              <option>Global</option>
+              <option>Local / Regional</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="launchTimeline">Launch Timeline <span class="field-xp">50 XP</span></label>
+            <select id="launchTimeline">
+              <option value="">Select timeline...</option>
+              <option>Under 3 months</option>
+              <option>3–6 months</option>
+              <option>6–12 months</option>
+              <option>12+ months</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(0)">&larr; Back</button>
+          <button class="btn-next" id="next1" onclick="goStep(2)">Next Mission &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Panel 2: Product Vision -->
+      <div class="panel" id="panel2">
+        <div class="panel-header">
+          <span class="panel-icon">💬</span>
+          <div>
+            <div class="panel-title">Product Vision</div>
+            <div class="panel-subtitle">Step 3 of 4 — Describe your product idea in detail</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="productIdea">Full Description <span class="field-xp">100 XP</span></label>
+          <textarea id="productIdea" rows="7"
+            placeholder="Describe your product: what it does, who it's for, what problem it solves, your key differentiator, and any traction you have. The more detail, the sharper the analysis."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(1)">&larr; Back</button>
+          <button class="btn-next" id="next2" onclick="goStep(3)">Final Review &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Panel 3: Confirm & Launch -->
+      <div class="panel" id="panel3">
+        <div class="panel-header">
+          <span class="panel-icon">🚀</span>
+          <div>
+            <div class="panel-title">Mission Briefing</div>
+            <div class="panel-subtitle">Step 4 of 4 — Confirm &amp; deploy 9 AI agents</div>
+          </div>
+        </div>
+        <div id="reviewSummary" class="review-grid"></div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(2)">&larr; Back</button>
+          <button class="btn-launch" id="analyzeBtn" onclick="analyzeProduct()">
+            <span class="btn-text">⚡ DEPLOY AI AGENTS</span>
+            <span class="btn-loader hidden"></span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── MISSION CONTROL ── -->
+    <section id="progressSection" class="progress-section hidden">
+      <div class="mission-header">
+        <div class="mission-title">⚔️ MISSION CONTROL</div>
+        <div class="mission-subtitle">AI agents are analyzing your product...</div>
+        <div class="scan-ticker" id="scanTicker">Initializing analysis...</div>
+      </div>
+
+      <div class="phases">
+        <div class="phase" id="phase0">
+          <div class="phase-top">
+            <div class="phase-icon">🔍</div>
+            <div class="phase-meta">
+              <div class="phase-num">PHASE 01</div>
+              <div class="phase-content">
+                <h3>Market Validation</h3>
+                <p>Market sizing, customer personas, competitive analysis</p>
+              </div>
             </div>
-            <p class="tagline">AI-Powered Multi-Agent Product Launch OS</p>
-        </header>
-        <script>
-            // Show user badge + logout
-            (function () {
-                const raw = sessionStorage.getItem('datadogs_user');
-                if (!raw) return;
-                const user = JSON.parse(raw);
-                const badge = document.getElementById('userBadge');
-                badge.innerHTML = `<span class="user-name">👤 ${user.name || user.username}</span><button class="logout-btn" onclick="sessionStorage.removeItem('datadogs_user'); window.location.href='login.html';">Logout</button>`;
-            })();
-        </script>
+          </div>
+          <div class="phase-progress-bar"><div class="phase-progress-fill"></div></div>
+          <div class="phase-status-row">
+            <div class="phase-status" id="status0">Queued</div>
+            <div class="phase-badge" id="badge0">WAITING</div>
+          </div>
+        </div>
 
-        <!-- Input Section -->
-        <section class="input-section">
-            <div class="input-container">
-
-                <!-- Product Name -->
-                <div class="form-group">
-                    <label for="productName">Product Name</label>
-                    <input type="text" id="productName" placeholder="e.g. NestEgg AI" />
-                </div>
-
-                <!-- Industry & Business Model -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="industry">Industry</label>
-                        <select id="industry">
-                            <option value="">Select industry...</option>
-                            <option>FinTech</option>
-                            <option>HealthTech</option>
-                            <option>EdTech</option>
-                            <option>E-commerce</option>
-                            <option>SaaS / B2B Software</option>
-                            <option>Consumer App</option>
-                            <option>CleanTech</option>
-                            <option>AgriTech</option>
-                            <option>Real Estate</option>
-                            <option>Logistics / Supply Chain</option>
-                            <option>Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="businessModel">Business Model</label>
-                        <select id="businessModel">
-                            <option value="">Select model...</option>
-                            <option>SaaS Subscription</option>
-                            <option>Marketplace</option>
-                            <option>E-commerce / D2C</option>
-                            <option>Freemium</option>
-                            <option>Usage-based</option>
-                            <option>Hardware + Software</option>
-                            <option>Franchise / Licensing</option>
-                            <option>Advertising</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Target Audience & Funding Stage -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="targetAudience">Target Audience</label>
-                        <select id="targetAudience">
-                            <option value="">Select audience...</option>
-                            <option>B2C (consumers)</option>
-                            <option>B2B (SMBs)</option>
-                            <option>B2B (Enterprise)</option>
-                            <option>B2B2C</option>
-                            <option>Government / Public Sector</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="fundingStage">Funding Stage</label>
-                        <select id="fundingStage">
-                            <option value="">Select stage...</option>
-                            <option>Bootstrapped</option>
-                            <option>Pre-seed</option>
-                            <option>Seed</option>
-                            <option>Series A</option>
-                            <option>Series B+</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Geography & Launch Timeline -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="geography">Geographic Focus</label>
-                        <select id="geography">
-                            <option value="">Select geography...</option>
-                            <option>North America</option>
-                            <option>Europe</option>
-                            <option>Asia-Pacific</option>
-                            <option>Latin America</option>
-                            <option>Global</option>
-                            <option>Local / Regional</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="launchTimeline">Launch Timeline</label>
-                        <select id="launchTimeline">
-                            <option value="">Select timeline...</option>
-                            <option>Under 3 months</option>
-                            <option>3–6 months</option>
-                            <option>6–12 months</option>
-                            <option>12+ months</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Product Idea Description -->
-                <div class="form-group">
-                    <label for="productIdea">Product Description</label>
-                    <textarea id="productIdea" rows="4"
-                        placeholder="Describe your product idea, target market, and key value proposition..."></textarea>
-                </div>
-
-                <button id="analyzeBtn" class="primary-btn">
-                    <span class="btn-text">Analyze Product</span>
-                    <span class="btn-loader hidden"></span>
-                </button>
+        <div class="phase" id="phase1">
+          <div class="phase-top">
+            <div class="phase-icon">💰</div>
+            <div class="phase-meta">
+              <div class="phase-num">PHASE 02</div>
+              <div class="phase-content">
+                <h3>Financial Modeling</h3>
+                <p>Revenue projections, pricing strategy, risk matrix</p>
+              </div>
             </div>
-        </section>
+          </div>
+          <div class="phase-progress-bar"><div class="phase-progress-fill"></div></div>
+          <div class="phase-status-row">
+            <div class="phase-status" id="status1">Queued</div>
+            <div class="phase-badge" id="badge1">WAITING</div>
+          </div>
+        </div>
 
-        <!-- Progress Section -->
-        <section id="progressSection" class="progress-section hidden">
-            <h2>🤖 Agents Working...</h2>
-            <div class="phases">
-                <div class="phase">
-                    <div class="phase-icon">1</div>
-                    <div class="phase-content">
-                        <h3>Market Validation</h3>
-                        <p>Analyzing market size, customer personas, and competitive landscape.</p>
-                        <div class="phase-status">Waiting...</div>
-                    </div>
-                </div>
-                <div class="phase">
-                    <div class="phase-icon">2</div>
-                    <div class="phase-content">
-                        <h3>Financial Modeling</h3>
-                        <p>Projecting revenue, pricing strategy, and risk assessment.</p>
-                        <div class="phase-status">Waiting...</div>
-                    </div>
-                </div>
-                <div class="phase">
-                    <div class="phase-icon">3</div>
-                    <div class="phase-content">
-                        <h3>GTM Strategy</h3>
-                        <p>Planning go-to-market approach and feature prioritization.</p>
-                        <div class="phase-status">Waiting...</div>
-                    </div>
-                </div>
-                <div class="phase">
-                    <div class="phase-icon">4</div>
-                    <div class="phase-content">
-                        <h3>Launch Decision</h3>
-                        <p>Generating final GO/NO-GO recommendation with confidence scoring.</p>
-                        <div class="phase-status">Waiting...</div>
-                    </div>
-                </div>
+        <div class="phase" id="phase2">
+          <div class="phase-top">
+            <div class="phase-icon">🗺️</div>
+            <div class="phase-meta">
+              <div class="phase-num">PHASE 03</div>
+              <div class="phase-content">
+                <h3>GTM Strategy</h3>
+                <p>Go-to-market planning, channels, feature roadmap</p>
+              </div>
             </div>
-        </section>
+          </div>
+          <div class="phase-progress-bar"><div class="phase-progress-fill"></div></div>
+          <div class="phase-status-row">
+            <div class="phase-status" id="status2">Queued</div>
+            <div class="phase-badge" id="badge2">WAITING</div>
+          </div>
+        </div>
 
-        <!-- Results Section -->
-        <section id="resultsSection" class="results-section hidden">
-            <div class="results-header">
-                <h2>📊 Analysis Results</h2>
-                <div id="productNameBadge" class="product-name-badge hidden"></div>
+        <div class="phase" id="phase3">
+          <div class="phase-top">
+            <div class="phase-icon">⚖️</div>
+            <div class="phase-meta">
+              <div class="phase-num">PHASE 04</div>
+              <div class="phase-content">
+                <h3>Launch Decision</h3>
+                <p>Final GO / NO-GO with confidence scoring</p>
+              </div>
             </div>
-            <div id="productMeta" class="product-meta hidden"></div>
+          </div>
+          <div class="phase-progress-bar"><div class="phase-progress-fill"></div></div>
+          <div class="phase-status-row">
+            <div class="phase-status" id="status3">Queued</div>
+            <div class="phase-badge" id="badge3">WAITING</div>
+          </div>
+        </div>
+      </div>
 
-            <!-- Master Synthesis Card -->
-            <div id="synthesisCard" class="synthesis-card hidden">
-                <div class="synthesis-header">
-                    <h3>🧠 Master Orchestrator — Executive Summary</h3>
-                </div>
-                <div id="synthesisContent" class="synthesis-content"></div>
-            </div>
+      <!-- Live agent chips -->
+      <div class="agents-ticker" style="margin-top:1.5rem">
+        <div class="agents-ticker-label">🤖 Deployed Agents</div>
+        <div class="agents-ticker-row" id="agentChips">
+          <span class="agent-chip" id="chip0">Market Analyzer</span>
+          <span class="agent-chip" id="chip1">Customer Insight</span>
+          <span class="agent-chip" id="chip2">Competitive Intel</span>
+          <span class="agent-chip" id="chip3">Revenue Architect</span>
+          <span class="agent-chip" id="chip4">Pricing Strategist</span>
+          <span class="agent-chip" id="chip5">Risk Officer</span>
+          <span class="agent-chip" id="chip6">GTM Strategist</span>
+          <span class="agent-chip" id="chip7">Product Roadmap</span>
+          <span class="agent-chip" id="chip8">Launch Director</span>
+        </div>
+      </div>
+    </section>
 
-            <!-- Decision Card -->
-            <div class="decision-card">
-                <div class="decision-header">
-                    <h3>Launch Recommendation</h3>
-                    <span id="decisionBadge" class="badge maybe">PENDING</span>
-                </div>
-                <div id="decisionContent" class="decision-content"></div>
-            </div>
+    <!-- ── RESULTS ── -->
+    <section id="resultsSection" class="results-section hidden">
 
-            <!-- Tabs -->
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="validation">Validation</button>
-                <button class="tab-btn" data-tab="financial">Financial</button>
-                <button class="tab-btn" data-tab="gtm">GTM Strategy</button>
-                <button class="tab-btn" data-tab="agents">Agents</button>
-                <button class="tab-btn" data-tab="learning">🧬 Learning</button>
-            </div>
+      <div class="results-hero">
+        <div id="productNameBadge" class="product-name-badge hidden"></div>
 
-            <div id="validationTab" class="tab-pane active">
-                <div id="validationCharts" class="chart-flex-container"></div>
-                <div id="validationContent"></div>
-            </div>
-            <div id="financialTab" class="tab-pane">
-                <div id="financialCharts" class="chart-flex-container"></div>
-                <div id="financialContent"></div>
-            </div>
-            <div id="gtmTab" class="tab-pane">
-                <div id="gtmCharts" class="chart-flex-container"></div>
-                <div id="gtmContent"></div>
-            </div>
-            <div id="agentsTab" class="tab-pane"></div>
-            <div id="learningTab" class="tab-pane">
-                <div id="learningContent">
-                    <p class="no-data">Run a simulation to see learning data.</p>
-                </div>
-                <div id="learningCharts" class="chart-flex-container"></div>
-            </div>
-        </section>
+        <!-- Verdict Banner -->
+        <div class="verdict-banner waiting-verdict" id="verdictBanner">
+          <div class="verdict-label">LAUNCH VERDICT</div>
+          <div class="verdict-text" id="verdictText">PENDING</div>
+          <div class="verdict-score" id="verdictScore"></div>
+        </div>
 
-        <footer class="footer">
-            <p>DataDogs &mdash; Multi-Agent Product OS &mdash; Powered by Groq AI</p>
-        </footer>
-    </div>
+        <div id="productMeta" class="product-meta hidden"></div>
+      </div>
 
-    <script src="app.js"></script>
+      <!-- Master Synthesis -->
+      <div id="synthesisCard" class="synthesis-card hidden">
+        <div class="synthesis-header">
+          <h3>🧠 MASTER ORCHESTRATOR — EXECUTIVE BRIEF</h3>
+        </div>
+        <div id="synthesisContent" class="synthesis-content md-block"></div>
+      </div>
+
+      <!-- Decision Detail -->
+      <div class="decision-card">
+        <div class="decision-header">
+          <h3>Launch Recommendation</h3>
+          <span id="decisionBadge" class="badge maybe">PENDING</span>
+        </div>
+        <div id="decisionContent" class="decision-content"></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="validation" onclick="switchTab('validation', this)">📊 Validation</button>
+        <button class="tab-btn" data-tab="financial" onclick="switchTab('financial', this)">💰 Financial</button>
+        <button class="tab-btn" data-tab="gtm" onclick="switchTab('gtm', this)">🗺️ GTM</button>
+        <button class="tab-btn" data-tab="agents" onclick="switchTab('agents', this)">🤖 Agents</button>
+      </div>
+
+      <div id="validationTab" class="tab-pane active">
+        <div id="validationCharts" class="chart-flex-container"></div>
+        <div id="validationContent"></div>
+      </div>
+      <div id="financialTab" class="tab-pane">
+        <div id="financialCharts" class="chart-flex-container"></div>
+        <div id="financialContent"></div>
+      </div>
+      <div id="gtmTab" class="tab-pane">
+        <div id="gtmCharts" class="chart-flex-container"></div>
+        <div id="gtmContent"></div>
+      </div>
+      <div id="agentsTab" class="tab-pane"></div>
+
+    </section>
+
+    <footer class="footer">
+      <span>DataDogs</span> &mdash; 9-Agent AI Product Intelligence &mdash; Powered by <span>Groq AI</span>
+    </footer>
+  </div>
+
+  <script>
+    // ── Auth guard ──
+    if (!sessionStorage.getItem('datadogs_user')) {
+      window.location.href = 'login.html';
+    }
+
+    // ── Particle Canvas ──
+    (function () {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let W, H;
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function Particle() {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.r = Math.random() * 1.5 + 0.3;
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.vy = (Math.random() - 0.5) * 0.3;
+        this.alpha = Math.random() * 0.5 + 0.1;
+        this.color = Math.random() > 0.5 ? '0, 245, 255' : '191, 95, 255';
+      }
+
+      function init() {
+        resize();
+        particles = Array.from({ length: 80 }, () => new Particle());
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0 || p.x > W) p.vx *= -1;
+          if (p.y < 0 || p.y > H) p.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+          ctx.fill();
+        });
+        // Draw connecting lines
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 140) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(0, 245, 255, ${0.04 * (1 - dist / 140)})`;
+              ctx.lineWidth = 0.5;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      init();
+      draw();
+    })();
+
+    // ── XP System ──
+    let xp = 0;
+    const XP_MAX = 400;
+
+    function addXP(amount) {
+      xp = Math.min(xp + amount, XP_MAX);
+      document.getElementById('xpFill').style.width = (xp / XP_MAX * 100) + '%';
+      document.getElementById('xpVal').textContent = xp + ' / ' + XP_MAX;
+    }
+
+    // ── Tab switching ──
+    function switchTab(tabName, btn) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabName + 'Tab').classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ── Wizard Step Logic ──
+    let currentStep = 0;
+
+    function goStep(step) {
+      // Update panels
+      document.querySelectorAll('.panel').forEach((p, i) => {
+        p.classList.toggle('active', i === step);
+      });
+
+      // Update wizard nav
+      for (let i = 0; i < 4; i++) {
+        const stepEl = document.getElementById('wStep' + i);
+        stepEl.classList.remove('active', 'done');
+        if (i < step) stepEl.classList.add('done');
+        else if (i === step) stepEl.classList.add('active');
+      }
+
+      // Update connectors
+      for (let i = 0; i < 3; i++) {
+        const conn = document.getElementById('wConn' + i);
+        conn.classList.remove('done', 'active');
+        if (i < step - 1) conn.classList.add('done');
+        else if (i === step - 1) conn.classList.add('active');
+      }
+
+      // Update review on step 3
+      if (step === 3) buildReview();
+
+      // XP for advancing
+      if (step > currentStep) addXP(50);
+      currentStep = step;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function buildReview() {
+      const fields = [
+        { id: 'productName', label: 'Product Name' },
+        { id: 'industry', label: 'Industry' },
+        { id: 'businessModel', label: 'Business Model' },
+        { id: 'targetAudience', label: 'Target Audience' },
+        { id: 'fundingStage', label: 'Funding Stage' },
+        { id: 'geography', label: 'Geography' },
+        { id: 'launchTimeline', label: 'Timeline' },
+        { id: 'productIdea', label: 'Product Description', full: true },
+      ];
+      const grid = document.getElementById('reviewSummary');
+      grid.innerHTML = fields.map(f => {
+        const val = document.getElementById(f.id).value.trim();
+        if (!val) return '';
+        const display = val.length > 120 ? val.slice(0, 120) + '…' : val;
+        return `<div class="review-item${f.full ? ' full' : ''}">
+          <div class="review-label">${f.label}</div>
+          <div class="review-value">${display}</div>
+        </div>`;
+      }).join('');
+    }
+
+    // ── Scan ticker messages ──
+    const TICKER_MSGS = [
+      'Initializing agent swarm...',
+      'Scanning market landscape...',
+      'Synthesizing customer data...',
+      'Mapping competitive matrix...',
+      'Modeling revenue projections...',
+      'Calculating risk vectors...',
+      'Deploying GTM strategist...',
+      'Building feature roadmap...',
+      'Running launch decision protocol...',
+      'Calibrating agent credibility...',
+    ];
+    let tickerIdx = 0;
+    let tickerInterval = null;
+
+    function startTicker() {
+      tickerIdx = 0;
+      const el = document.getElementById('scanTicker');
+      el.textContent = TICKER_MSGS[0];
+      tickerInterval = setInterval(() => {
+        tickerIdx = (tickerIdx + 1) % TICKER_MSGS.length;
+        el.textContent = TICKER_MSGS[tickerIdx];
+      }, 2200);
+    }
+
+    function stopTicker() { if (tickerInterval) clearInterval(tickerInterval); }
+  </script>
+
+  <script src="app.js"></script>
 </body>
 
 </html>

@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataDogs — Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <title>DataDogs — Agent Access</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@700;900&display=swap"
         rel="stylesheet">
     <style>
         *,
@@ -17,134 +18,264 @@
         }
 
         :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #1e293b;
-            --border: rgba(255, 255, 255, 0.08);
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --accent: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.25);
-            --error: #ef4444;
+            --neon-cyan: #00f5ff;
+            --neon-purple: #bf5fff;
+            --neon-green: #39ff14;
+            --neon-pink: #ff2d78;
+            --gold: #ffd700;
+            --bg-void: #050510;
+            --bg-card: #0f1130;
+            --bg-input: #0c0c28;
+            --border-dim: rgba(191, 95, 255, 0.2);
+            --text-bright: #e8eaff;
+            --text-mid: #8892b0;
+            --text-dim: #4a5280;
+            --gradient-hero: linear-gradient(135deg, #00f5ff 0%, #bf5fff 50%, #ff2d78 100%);
+            --gradient-btn: linear-gradient(135deg, #00f5ff, #bf5fff);
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-void);
+            color: var(--text-bright);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image:
-                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
+            overflow: hidden;
         }
 
-        .login-container {
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 420px;
-            padding: 2rem;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .login-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2.5rem 2rem;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 40px var(--accent-glow);
+        .login-wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            padding: 1.5rem;
         }
 
-        .login-header {
+        /* Header */
+        .login-hero {
             text-align: center;
             margin-bottom: 2rem;
         }
 
-        .login-logo {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+        .login-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 245, 255, 0.06);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            border-radius: 50px;
+            padding: 0.3rem 1rem 0.3rem 0.5rem;
+            margin-bottom: 1.25rem;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .login-badge .dot {
+            width: 7px;
+            height: 7px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(57, 255, 20, 0.8);
+            animation: pulse-dot 2s ease infinite;
+        }
+
+        .login-badge span {
+            font-size: 0.72rem;
+            color: var(--neon-cyan);
+            font-weight: 600;
+            letter-spacing: 0.08em;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.7);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
         }
 
         .login-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2rem, 8vw, 3rem);
+            font-weight: 900;
+            background: var(--gradient-hero);
             -webkit-background-clip: text;
-            background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(0, 245, 255, 0.3));
             margin-bottom: 0.3rem;
         }
 
-        .login-subtitle {
-            font-size: 0.82rem;
-            color: var(--text-secondary);
+        .login-sub {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.3em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        /* Card */
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 20px;
+            padding: 2.25rem 2rem;
+            box-shadow: 0 0 60px rgba(0, 245, 255, 0.06), 0 25px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
+        }
+
+        .section-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(0, 245, 255, 0.3), transparent);
         }
 
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.1rem;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--text-secondary);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-mid);
             margin-bottom: 0.4rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.07em;
         }
 
         .form-group input {
             width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
+            padding: 0.8rem 1rem;
+            background: var(--bg-input);
+            border: 1.5px solid rgba(191, 95, 255, 0.2);
             border-radius: 10px;
-            color: var(--text-primary);
+            color: var(--text-bright);
             font-size: 0.92rem;
-            font-family: 'Inter', sans-serif;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: all 0.3s;
             outline: none;
         }
 
         .form-group input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
+            border-color: var(--neon-cyan);
+            background: rgba(0, 245, 255, 0.04);
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.12);
         }
 
         .form-group input::placeholder {
-            color: #475569;
+            color: var(--text-dim);
         }
 
         .login-btn {
             width: 100%;
-            padding: 0.85rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+            padding: 0.9rem;
+            background: var(--gradient-btn);
+            color: #000;
             border: none;
             border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            font-family: 'Orbitron', monospace;
             cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.2s;
-            margin-top: 0.5rem;
+            transition: all 0.3s;
+            margin-top: 0.25rem;
+            position: relative;
+            overflow: hidden;
         }
 
         .login-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 8px 30px rgba(0, 245, 255, 0.3);
         }
 
         .login-btn:active {
             transform: translateY(0);
         }
 
+        .login-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -60%;
+            width: 40%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: skewX(-20deg) translateY(-50%);
+            animation: shimmer 3s ease infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -60%;
+            }
+
+            100% {
+                left: 140%;
+            }
+        }
+
         .login-error {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: var(--error);
-            padding: 0.6rem 0.8rem;
+            background: rgba(255, 45, 120, 0.08);
+            border: 1px solid rgba(255, 45, 120, 0.3);
+            color: var(--neon-pink);
+            padding: 0.6rem 0.9rem;
             border-radius: 8px;
             font-size: 0.8rem;
             margin-bottom: 1rem;
@@ -157,54 +288,11 @@
             animation: shake 0.4s ease;
         }
 
-        @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            20%,
-            60% {
-                transform: translateX(-6px);
-            }
-
-            40%,
-            80% {
-                transform: translateX(6px);
-            }
-        }
-
-        .login-footer {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.72rem;
-            color: #475569;
-        }
-
-        .toggle-link {
-            text-align: center;
-            margin-top: 1.2rem;
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-        }
-
-        .toggle-link a {
-            color: #818cf8;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .toggle-link a:hover {
-            text-decoration: underline;
-        }
-
         .login-success {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #10b981;
-            padding: 0.6rem 0.8rem;
+            background: rgba(57, 255, 20, 0.07);
+            border: 1px solid rgba(57, 255, 20, 0.25);
+            color: var(--neon-green);
+            padding: 0.6rem 0.9rem;
             border-radius: 8px;
             font-size: 0.8rem;
             margin-bottom: 1rem;
@@ -216,6 +304,51 @@
             display: block;
         }
 
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-5px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 0.82rem;
+            color: var(--text-mid);
+        }
+
+        .toggle-link a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 0.1em;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -223,18 +356,25 @@
 </head>
 
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <div class="login-logo">🐾</div>
-                <div class="login-title">DataDogs</div>
-                <div class="login-subtitle" id="formSubtitle">Multi-Agent Product Launch OS</div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="login-wrap">
+        <div class="login-hero">
+            <div class="login-badge">
+                <span class="dot"></span>
+                <span>SECURE AGENT ACCESS</span>
             </div>
+            <div class="login-title">DataDogs</div>
+            <div class="login-sub">Multi-Agent Launch Intelligence</div>
+        </div>
 
-            <div id="loginError" class="login-error">Invalid username or password</div>
-            <div id="successMsg" class="login-success">Account created! Please sign in.</div>
+        <div class="login-card">
+            <div class="section-label" id="formSubtitle">AUTHENTICATE</div>
 
-            <!-- Sign In Form -->
+            <div id="loginError" class="login-error"></div>
+            <div id="successMsg" class="login-success">Account created! Sign in to continue.</div>
+
+            <!-- Sign In -->
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label for="loginUser">Username</label>
@@ -245,34 +385,32 @@
                     <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password"
                         required>
                 </div>
-                <button type="submit" class="login-btn">Sign In →</button>
+                <button type="submit" class="login-btn">DEPLOY ACCESS →</button>
             </form>
 
-            <!-- Sign Up Form -->
+            <!-- Sign Up -->
             <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
                 <div class="form-group">
                     <label for="regName">Full Name</label>
-                    <input type="text" id="regName" placeholder="e.g. Jane Doe" required>
+                    <input type="text" id="regName" placeholder="e.g. Alex Chen" required>
                 </div>
                 <div class="form-group">
                     <label for="regUser">Username</label>
-                    <input type="text" id="regUser" placeholder="Choose a username" autocomplete="username" required>
+                    <input type="text" id="regUser" placeholder="Choose a callsign" autocomplete="username" required>
                 </div>
                 <div class="form-group">
                     <label for="regPass">Password</label>
                     <input type="password" id="regPass" placeholder="Choose a password" autocomplete="new-password"
                         required>
                 </div>
-                <button type="submit" class="login-btn">Create Account →</button>
+                <button type="submit" class="login-btn">CREATE AGENT →</button>
             </form>
 
             <div class="toggle-link" id="toggleLink">
-                Don't have an account? <a onclick="showRegister()">Create one</a>
+                No account? <a onclick="showRegister()">Create one</a>
             </div>
 
-            <div class="login-footer">
-                Powered by Groq AI &mdash; Secured Access
-            </div>
+            <div class="login-footer">Powered by Groq AI &mdash; Secured Access</div>
         </div>
     </div>
 
@@ -283,11 +421,48 @@
             window.location.href = 'app.html';
         }
 
+        // Particle canvas
+        (function () {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let W, H;
+
+            function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+            function Particle() {
+                this.x = Math.random() * W; this.y = Math.random() * H;
+                this.r = Math.random() * 1.2 + 0.3;
+                this.vx = (Math.random() - 0.5) * 0.25; this.vy = (Math.random() - 0.5) * 0.25;
+                this.alpha = Math.random() * 0.4 + 0.1;
+                this.color = Math.random() > 0.5 ? '0, 245, 255' : '191, 95, 255';
+            }
+
+            function init() { resize(); particles = Array.from({ length: 60 }, () => new Particle()); }
+
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < 0 || p.x > W) p.vx *= -1;
+                    if (p.y < 0 || p.y > H) p.vy *= -1;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+                    ctx.fill();
+                });
+                requestAnimationFrame(draw);
+            }
+
+            window.addEventListener('resize', resize);
+            init(); draw();
+        })();
+
         function showRegister() {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('registerForm').classList.remove('hidden');
-            document.getElementById('toggleLink').innerHTML = 'Already have an account? <a onclick="showLogin()">Sign in</a>';
-            document.getElementById('formSubtitle').textContent = 'Create your account';
+            document.getElementById('toggleLink').innerHTML = 'Already an agent? <a onclick="showLogin()">Sign in</a>';
+            document.getElementById('formSubtitle').textContent = 'CREATE AGENT';
             document.getElementById('loginError').classList.remove('visible');
             document.getElementById('successMsg').classList.remove('visible');
         }
@@ -295,8 +470,8 @@
         function showLogin() {
             document.getElementById('registerForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
-            document.getElementById('toggleLink').innerHTML = 'Don\'t have an account? <a onclick="showRegister()">Create one</a>';
-            document.getElementById('formSubtitle').textContent = 'Multi-Agent Product Launch OS';
+            document.getElementById('toggleLink').innerHTML = 'No account? <a onclick="showRegister()">Create one</a>';
+            document.getElementById('formSubtitle').textContent = 'AUTHENTICATE';
             document.getElementById('loginError').classList.remove('visible');
         }
 

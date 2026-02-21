@@ -1,7 +1,7 @@
 import json
 import os
 from typing import Any, Dict, Optional
-import anthropic
+from groq import Groq
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,28 +9,27 @@ load_dotenv()
 class BaseAgent:
     """
     Base class for all specialized AI agents in the Product Launch OS.
-    Handles interaction with the Anthropic Claude API and tracks agent credibility.
+    Handles interaction with the Groq API and tracks agent credibility.
     """
 
-    def __init__(self, name: str, role: str, model: str = "claude-sonnet-4-20250514"):
+    def __init__(self, name: str, role: str, model: str = "llama-3.3-70b-versatile"):
         """
-        Initializes the agent with a name, role, and Anthropic client.
+        Initializes the agent with a name, role, and Groq client.
 
         Args:
             name: Human-readable name of the agent.
             role: The specific domain expertise of the agent.
-            model: The Claude model to use (default: claude-sonnet-4-20250514).
+            model: The Groq model to use (default: llama-3.3-70b-versatile).
         """
         self.name = name
         self.role = role
         self.model = model
-        self.client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
         self.credibility_score = 1.0  # Initial perfect score
 
     def call_groq(self, system_prompt: str, user_prompt: str, max_retries: int = 3) -> Dict[str, Any]:
         """
-        Calls the Claude API and strictly expects a JSON response.
-        Method name kept as call_groq for backward compatibility with all agents.
+        Calls the Groq API and strictly expects a JSON response.
         Retries up to max_retries times on failures.
         """
         import logging
@@ -47,21 +46,21 @@ class BaseAgent:
         last_error = None
         for attempt in range(max_retries):
             try:
-                response = self.client.messages.create(
+                response = self.client.chat.completions.create(
                     model=self.model,
-                    max_tokens=4096,
-                    system=full_system,
                     messages=[
+                        {"role": "system", "content": full_system},
                         {"role": "user", "content": user_prompt},
                     ],
+                    max_tokens=4096,
+                    response_format={"type": "json_object"},
                 )
 
-                content = response.content[0].text.strip()
+                content = response.choices[0].message.content.strip()
 
-                # Strip markdown code fences if Claude wraps the JSON
+                # Strip markdown code fences if model wraps the JSON
                 if content.startswith("```"):
                     lines = content.split("\n")
-                    # Remove first line (```json) and last line (```)
                     lines = [l for l in lines if not l.strip().startswith("```")]
                     content = "\n".join(lines).strip()
 
@@ -74,7 +73,7 @@ class BaseAgent:
 
             except Exception as e:
                 error_str = str(e)
-                logger.warning(f"[{self.name}] Claude API error on attempt {attempt+1}/{max_retries}: {error_str[:200]}")
+                logger.warning(f"[{self.name}] Groq API error on attempt {attempt+1}/{max_retries}: {error_str[:200]}")
                 last_error = error_str
                 if attempt < max_retries - 1:
                     import time

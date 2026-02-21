@@ -13,8 +13,7 @@ const btnLoader = analyzeBtn.querySelector('.btn-loader');
 let isAnalyzing = false;
 let activeCharts = []; // Track active charts for cleanup
 
-// Event Listeners
-analyzeBtn.addEventListener('click', analyzeProduct);
+// Event Listeners (onclick in HTML handles it — no duplicate needed)
 
 function buildProductContext() {
     const name = document.getElementById('productName').value.trim();
@@ -126,9 +125,13 @@ function updatePhaseStatus(phase, status, text) {
     if (status === 'active') {
         phase.classList.add('active');
         phase.classList.remove('completed');
+        const badge = phase.querySelector('.phase-badge');
+        if (badge) badge.textContent = 'RUNNING';
     } else if (status === 'completed') {
         phase.classList.remove('active');
         phase.classList.add('completed');
+        const badge = phase.querySelector('.phase-badge');
+        if (badge) badge.textContent = 'DONE ✓';
     }
     phase.querySelector('.phase-status').textContent = text;
 }
@@ -148,7 +151,11 @@ async function analyzeProduct() {
     btnText.classList.add('hidden');
     btnLoader.classList.remove('hidden');
 
-    // Show progress section
+    // Show progress section, hide input wizard
+    const inputSection = document.getElementById('inputSection');
+    if (inputSection) inputSection.classList.add('hidden');
+    const wizardNav = document.getElementById('wizardNav');
+    if (wizardNav) wizardNav.classList.add('hidden');
     progressSection.classList.remove('hidden');
     resultsSection.classList.add('hidden');
 
@@ -157,11 +164,16 @@ async function analyzeProduct() {
     phases.forEach(phase => {
         phase.classList.remove('active', 'completed');
         phase.querySelector('.phase-status').textContent = 'Waiting...';
+        const badge = phase.querySelector('.phase-badge');
+        if (badge) badge.textContent = 'WAITING';
     });
 
     // Clear out old charts
     activeCharts.forEach(c => c.destroy());
     activeCharts = [];
+
+    // Start scan ticker
+    if (typeof startTicker === 'function') startTicker();
 
     // Simulate progress
     simulatePhaseProgress();
@@ -185,11 +197,17 @@ async function analyzeProduct() {
     } catch (error) {
         console.error('Error:', error);
         alert('Failed to analyze product. Make sure the backend server is running on port 5001.');
+        // Restore input section on error
+        const inputSec = document.getElementById('inputSection');
+        if (inputSec) inputSec.classList.remove('hidden');
+        const wNav = document.getElementById('wizardNav');
+        if (wNav) wNav.classList.remove('hidden');
     } finally {
         isAnalyzing = false;
         analyzeBtn.disabled = false;
         btnText.classList.remove('hidden');
         btnLoader.classList.add('hidden');
+        if (typeof stopTicker === 'function') stopTicker();
     }
 }
 
@@ -264,6 +282,18 @@ function displayDecision(decision) {
     const verdict = (decision.decision || '').toUpperCase();
     badge.textContent = verdict || 'PENDING';
     badge.className = 'badge ' + (verdict === 'GO' ? 'go' : verdict === 'NO-GO' ? 'no-go' : 'maybe');
+
+    // ── Update gamified verdict banner ──
+    const banner = document.getElementById('verdictBanner');
+    const verdictText = document.getElementById('verdictText');
+    const verdictScore = document.getElementById('verdictScore');
+    if (banner && verdictText) {
+        banner.className = 'verdict-banner ' + (verdict === 'GO' ? 'go-verdict' : verdict === 'NO-GO' ? 'nogo-verdict' : 'waiting-verdict');
+        verdictText.textContent = verdict || 'PENDING';
+        if (verdictScore && decision.confidence_score !== undefined) {
+            verdictScore.innerHTML = `AI Confidence: <strong>${decision.confidence_score}/100</strong>`;
+        }
+    }
 
     let html = '';
 
