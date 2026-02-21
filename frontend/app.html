@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
@@ -205,8 +206,14 @@
                 <button class="tab-btn" data-tab="agents">Agents</button>
             </div>
 
-            <div id="validationTab" class="tab-pane active"></div>
-            <div id="financialTab" class="tab-pane"></div>
+            <div id="validationTab" class="tab-pane active">
+                <div id="validationCharts" class="chart-flex-container"></div>
+                <div id="validationContent"></div>
+            </div>
+            <div id="financialTab" class="tab-pane">
+                <div id="financialCharts" class="chart-flex-container"></div>
+                <div id="financialContent"></div>
+            </div>
             <div id="gtmTab" class="tab-pane"></div>
             <div id="agentsTab" class="tab-pane"></div>
         </section>

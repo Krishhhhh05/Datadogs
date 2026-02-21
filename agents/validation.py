@@ -57,8 +57,9 @@ class MarketAgent(BaseAgent):
         system_prompt = (
             f"You are the {self.name}, {self.role}\n"
             "Analyze the market potential for the given product idea.\n"
-            "Provide: TAM/SAM/SOM estimates, key market trends, and a market readiness score (0-100).\n"
-            "Use the provided Google Trends data (if available) to inform your market trends analysis and readiness score."
+            "Provide key market trends as concise bullet points, and a market readiness score (0-100).\n"
+            "Use the provided Google Trends data (if available) to inform your market trends analysis and readiness score.\n"
+            "CRITICAL: You must output a structured JSON array for TAM, SAM, and SOM under the key `market_size`, where each object has `label` (TAM/SAM/SOM) and `value` (numeric estimate). Keep text explanations extremely concise."
         )
         user_prompt = f"Product Context: {product_context}{trends_context}"
         return self.call_groq(system_prompt, user_prompt)
@@ -112,8 +113,9 @@ class CompetitiveAgent(BaseAgent):
         system_prompt = (
             f"You are the {self.name}, {self.role}\n"
             "Assess the competitive landscape for the product idea.\n"
-            "Provide: Top 3 competitors, SWOT analysis for the product vs competitors, and a differentiation score (0-100).\n"
-            "Use the provided Google Trends data (if available) to evaluate competitor mindshare and search interest over time."
+            "Provide the top 3 competitors, and evaluate them concisely. Keep SWOT analysis as short bullet points.\n"
+            "Use the provided Google Trends data (if available) to evaluate competitor mindshare and search interest over time.\n"
+            "CRITICAL: Output an array under the key `competitor_scores` containing objects with `name` (competitor name), `price_score`, `features_score`, `usability_score`, `brand_score`, and `innovation_score` (all 1-10). Include an object for the proposed product (`name`: 'Proposed Product'). This will be used for a radar chart."
         )
         user_prompt = f"Product Context: {product_context}{trends_context}"
         return self.call_groq(system_prompt, user_prompt)

@@ -12,7 +12,8 @@ class RevenueAgent(BaseAgent):
         system_prompt = (
             f"You are the {self.name}, {self.role}\n"
             "Build a simplified revenue model based on market data.\n"
-            "Provide: Suggested revenue streams, 12-month revenue forecast (low/mid/high), and LTV assumptions."
+            "Provide brief, bullet-point suggested revenue streams and LTV assumptions.\n"
+            "CRITICAL: Output a structured array under `5_year_projection` containing 5 objects, each with `year` (int 1-5), `revenue` (int), and `costs` (int). This will be graphed as a Line/Bar combo chart."
         )
         user_prompt = f"Product Context: {product_context}\nValidation Context (Phase 1): {validation_data}"
         return self.call_groq(system_prompt, user_prompt)
@@ -44,7 +45,8 @@ class RiskAgent(BaseAgent):
         system_prompt = (
             f"You are the {self.name}, {self.role}\n"
             "Identify financial and operational risks for the launch.\n"
-            "Provide: Top 3 risks, mitigation strategies, and a total risk sensitivity score (0-100)."
+            "Provide the top 3 risks with concise mitigation strategies, and a total risk sensitivity score (0-100).\n"
+            "CRITICAL: Output a structured array under `risk_matrix` containing objects with `name` (string), `impact` (int 1-100, x-axis), and `probability` (int 1-100, y-axis). This will be graphed as a Scatter/Bubble chart."
         )
         user_prompt = f"Product Context: {product_context}\nFinancial Context (Phase 2): {financial_context}"
         return self.call_groq(system_prompt, user_prompt)

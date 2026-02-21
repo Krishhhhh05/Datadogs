@@ -11,6 +11,7 @@ const btnLoader = analyzeBtn.querySelector('.btn-loader');
 
 // State
 let isAnalyzing = false;
+let activeCharts = []; // Track active charts for cleanup
 
 // Event Listeners
 analyzeBtn.addEventListener('click', analyzeProduct);
@@ -26,13 +27,13 @@ function buildProductContext() {
     const launchTimeline = document.getElementById('launchTimeline').value;
 
     const parts = [];
-    if (name)           parts.push(`Product Name: ${name}`);
-    if (idea)           parts.push(`Description: ${idea}`);
-    if (industry)       parts.push(`Industry: ${industry}`);
-    if (businessModel)  parts.push(`Business Model: ${businessModel}`);
+    if (name) parts.push(`Product Name: ${name}`);
+    if (idea) parts.push(`Description: ${idea}`);
+    if (industry) parts.push(`Industry: ${industry}`);
+    if (businessModel) parts.push(`Business Model: ${businessModel}`);
     if (targetAudience) parts.push(`Target Audience: ${targetAudience}`);
-    if (fundingStage)   parts.push(`Funding Stage: ${fundingStage}`);
-    if (geography)      parts.push(`Geographic Focus: ${geography}`);
+    if (fundingStage) parts.push(`Funding Stage: ${fundingStage}`);
+    if (geography) parts.push(`Geographic Focus: ${geography}`);
     if (launchTimeline) parts.push(`Launch Timeline: ${launchTimeline}`);
 
     return parts.join('\n');
@@ -97,6 +98,10 @@ async function analyzeProduct() {
         phase.querySelector('.phase-status').textContent = 'Waiting...';
     });
 
+    // Clear out old charts
+    activeCharts.forEach(c => c.destroy());
+    activeCharts = [];
+
     // Simulate progress
     simulatePhaseProgress();
 
@@ -143,11 +148,11 @@ function displayResults(results) {
 
     // Show product meta (structured inputs)
     const metaFields = [
-        { id: 'industry',       label: 'Industry' },
-        { id: 'businessModel',  label: 'Model' },
+        { id: 'industry', label: 'Industry' },
+        { id: 'businessModel', label: 'Model' },
         { id: 'targetAudience', label: 'Audience' },
-        { id: 'fundingStage',   label: 'Stage' },
-        { id: 'geography',      label: 'Geography' },
+        { id: 'fundingStage', label: 'Stage' },
+        { id: 'geography', label: 'Geography' },
         { id: 'launchTimeline', label: 'Timeline' },
     ];
     const metaEl = document.getElementById('productMeta');
@@ -231,6 +236,42 @@ function displayValidation(validation) {
             <h4>📊 Market Analysis</h4>`;
         if (mta.context) html += `<p class="card-context">${mta.context}</p>`;
 
+        // Render Market Size Chart if available
+        if (mta.market_size && Array.isArray(mta.market_size)) {
+            setTimeout(() => {
+                const ctx = document.createElement('canvas');
+                const container = document.getElementById('validationCharts');
+                const wrapper = document.createElement('div');
+                wrapper.className = 'chart-wrapper';
+                wrapper.innerHTML = '<h5>Market Size Estimates</h5>';
+                wrapper.appendChild(ctx);
+                container.appendChild(wrapper);
+
+                const labels = mta.market_size.map(d => d.label);
+                const data = mta.market_size.map(d => d.value);
+
+                const chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: ['#667eea', '#764ba2', '#10b981'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: '#cbd5e1' } }
+                        }
+                    }
+                });
+                activeCharts.push(chart);
+            }, 50);
+        }
+
         if (mta.market_conditions?.length) {
             html += `<div class="sub-section"><h5>Market Conditions</h5><div class="trend-grid">`;
             mta.market_conditions.forEach(mc => {
@@ -247,8 +288,8 @@ function displayValidation(validation) {
             const pa = mta.predictive_analytics;
             html += `<div class="sub-section"><h5>Predictive Analytics</h5>
                 <div class="metrics-row">
-                    ${pa.forecast     ? `<div class="metric-pill">${pa.forecast}</div>` : ''}
-                    ${pa.probability  !== undefined ? `<div class="metric-pill">Probability: ${Math.round(pa.probability * 100)}%</div>` : ''}
+                    ${pa.forecast ? `<div class="metric-pill">${pa.forecast}</div>` : ''}
+                    ${pa.probability !== undefined ? `<div class="metric-pill">Probability: ${Math.round(pa.probability * 100)}%</div>` : ''}
                     ${pa.confidence_level !== undefined ? `<div class="metric-pill">Confidence: ${pa.confidence_level}%</div>` : ''}
                 </div></div>`;
         }
@@ -267,8 +308,8 @@ function displayValidation(validation) {
                     ${c.persona_type ? `<span class="persona-type-badge">${c.persona_type}</span>` : ''}
                 </div>
                 ${c.demographics ? `<div class="demo-row">
-                    ${c.demographics.age        ? `<span>🎂 ${c.demographics.age}</span>`        : ''}
-                    ${c.demographics.income     ? `<span>💼 ${c.demographics.income}</span>`     : ''}
+                    ${c.demographics.age ? `<span>🎂 ${c.demographics.age}</span>` : ''}
+                    ${c.demographics.income ? `<span>💼 ${c.demographics.income}</span>` : ''}
                     ${c.demographics.occupation ? `<span>🏢 ${c.demographics.occupation}</span>` : ''}
                 </div>` : ''}
                 ${c.pain_points?.length ? `<div class="tag-section">
@@ -287,9 +328,59 @@ function displayValidation(validation) {
     // ── Competitive Analysis ─────────────────────────────────────────
     const competitors = validation?.competitors;
     if (competitors) {
-        const comps = competitors.competitors || [];
+        const comps = competitors.competitors || competitors.competitor_scores || [];
+
+        // Render Competitor Radar Chart if available
+        if (competitors.competitor_scores && Array.isArray(competitors.competitor_scores)) {
+            setTimeout(() => {
+                const ctx = document.createElement('canvas');
+                const container = document.getElementById('validationCharts');
+                const wrapper = document.createElement('div');
+                wrapper.className = 'chart-wrapper';
+                wrapper.innerHTML = '<h5>Competitive Radar</h5>';
+                wrapper.appendChild(ctx);
+                container.appendChild(wrapper);
+
+                const datasets = competitors.competitor_scores.map((c, i) => {
+                    const isProduct = c.name === 'Proposed Product';
+                    return {
+                        label: c.name,
+                        data: [c.price_score || 0, c.features_score || 0, c.usability_score || 0, c.brand_score || 0, c.innovation_score || 0],
+                        backgroundColor: isProduct ? 'rgba(102, 126, 234, 0.4)' : `rgba(200, 200, 200, ${0.1 + (i * 0.1)})`,
+                        borderColor: isProduct ? '#667eea' : '#cbd5e1',
+                        borderWidth: 2
+                    };
+                });
+
+                const chart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Price', 'Features', 'Usability', 'Brand', 'Innovation'],
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: { color: 'rgba(255,255,255,0.1)' },
+                                grid: { color: 'rgba(255,255,255,0.1)' },
+                                pointLabels: { color: '#cbd5e1' },
+                                ticks: { display: false, max: 10, min: 0 }
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: '#cbd5e1' } }
+                        }
+                    }
+                });
+                activeCharts.push(chart);
+            }, 50);
+        }
+
         html += `<div class="info-card"><h4>🎯 Competitive Analysis</h4><div class="comp-grid">`;
         comps.forEach(c => {
+            if (!c.name || c.name === 'Proposed Product') return; // Skip if just score data for the product itself
             html += `<div class="comp-card">
                 <div class="comp-name">${c.name || 'Competitor'}</div>
                 ${c.description ? `<p class="comp-desc">${c.description}</p>` : ''}
@@ -308,7 +399,10 @@ function displayValidation(validation) {
         html += `</div></div>`;
     }
 
-    tab.innerHTML = html || '<p class="no-data">No validation data available.</p>';
+    // Clear old charts container and reset HTML
+    const container = document.getElementById('validationCharts');
+    if (container) container.innerHTML = '';
+    document.getElementById('validationContent').innerHTML = html || '<p class="no-data">No validation data available.</p>';
 }
 
 function displayFinancial(financial) {
@@ -319,6 +413,68 @@ function displayFinancial(financial) {
     const revenue = financial?.revenue;
     if (revenue) {
         const rm = revenue.revenue_model || revenue;
+
+        // Render 5-year projection chart
+        if (rm['5_year_projection'] && Array.isArray(rm['5_year_projection'])) {
+            setTimeout(() => {
+                const ctx = document.createElement('canvas');
+                const container = document.getElementById('financialCharts');
+                const wrapper = document.createElement('div');
+                wrapper.className = 'chart-wrapper';
+                wrapper.innerHTML = '<h5>5-Year Financial Projection</h5>';
+                wrapper.appendChild(ctx);
+                container.appendChild(wrapper);
+
+                const proj = rm['5_year_projection'];
+                const labels = proj.map(p => `Year ${p.year}`);
+                const revenues = proj.map(p => p.revenue);
+                const costs = proj.map(p => p.costs);
+
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                type: 'line',
+                                label: 'Revenue ($)',
+                                data: revenues,
+                                borderColor: '#10b981',
+                                backgroundColor: 'transparent',
+                                tension: 0.3,
+                                borderWidth: 3
+                            },
+                            {
+                                type: 'bar',
+                                label: 'Costs ($)',
+                                data: costs,
+                                backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: { color: '#94a3b8', callback: value => '$' + (value / 1000) + 'k' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8' }
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'top', labels: { color: '#cbd5e1' } }
+                        }
+                    }
+                });
+                activeCharts.push(chart);
+            }, 50);
+        }
+
         html += `<div class="info-card"><h4>💰 Revenue Model</h4>
             <div class="metrics-grid">
                 ${rm.subscription_revenue !== undefined ? `<div class="metric-box">
@@ -338,6 +494,8 @@ function displayFinancial(financial) {
                     <div class="metric-label">Margin</div>
                 </div>` : ''}
             </div>
+            ${rm.suggested_revenue_streams?.length ? `<div class="sub-section"><h5>Income Streams</h5><ul>${rm.suggested_revenue_streams.map(s => `<li>${s}</li>`).join('')}</ul></div>` : ''}
+            ${rm.ltv_assumptions ? `<div class="sub-section"><h5>LTV Assumptions</h5><p>${rm.ltv_assumptions}</p></div>` : ''}
         </div>`;
     }
 
@@ -364,16 +522,61 @@ function displayFinancial(financial) {
         const ra = risk.risk_analysis || risk;
         html += `<div class="info-card"><h4>⚠️ Risk Assessment</h4>`;
 
-        if (ra.potential_risks?.length) {
+        if (ra.potential_risks?.length || ra.risk_matrix?.length) {
+            const risks = ra.risk_matrix || ra.potential_risks;
+
+            // Render risk scatter/bubble chart
+            if (ra.risk_matrix && Array.isArray(ra.risk_matrix)) {
+                setTimeout(() => {
+                    const ctx = document.createElement('canvas');
+                    const container = document.getElementById('financialCharts');
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'chart-wrapper';
+                    wrapper.innerHTML = '<h5>Risk Impact vs ProbabilityMatrix</h5>';
+                    wrapper.appendChild(ctx);
+                    container.appendChild(wrapper);
+
+                    const datasets = ra.risk_matrix.map(r => ({
+                        label: r.name,
+                        data: [{ x: r.impact, y: r.probability, r: (r.impact + r.probability) / 12 }],
+                        backgroundColor: r.impact > 70 ? 'rgba(239, 68, 68, 0.7)' : r.impact > 40 ? 'rgba(245, 158, 11, 0.7)' : 'rgba(16, 185, 129, 0.7)',
+                    }));
+
+                    const chart = new Chart(ctx, {
+                        type: 'bubble',
+                        data: { datasets: datasets },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            scales: {
+                                x: { title: { display: true, text: 'Impact (1-100)', color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0, max: 100 },
+                                y: { title: { display: true, text: 'Probability (1-100)', color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0, max: 100 }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: { label: (ctx) => `${ctx.dataset.label}: Impact ${ctx.raw.x} / Prob ${ctx.raw.y}` }
+                                }
+                            }
+                        }
+                    });
+                    activeCharts.push(chart);
+                }, 50);
+            }
+
             html += `<div class="risk-list">`;
-            ra.potential_risks.forEach(r => {
+            risks.forEach(r => {
+                const title = r.name || r.description || 'Risk';
                 const impact = r.impact || 0;
-                const prob   = r.probability !== undefined ? Math.round(r.probability * 100) : 0;
-                const level  = impact >= 7 ? 'high' : impact >= 4 ? 'medium' : 'low';
+                const prob = r.probability !== undefined ? Math.round(r.probability * (r.probability <= 1 ? 100 : 1)) : 0;
+                const level = impact >= 70 || (impact <= 10 && impact >= 7) ? 'high' : impact >= 40 || (impact <= 10 && impact >= 4) ? 'medium' : 'low';
+                // normalize impact score for display
+                const displayImpact = impact > 10 ? impact : impact * 10;
+
                 html += `<div class="risk-item risk-${level}">
-                    <p class="risk-desc">${r.description || ''}</p>
+                    <p class="risk-desc"><strong>${title}</strong></p>
+                    ${r.mitigation ? `<p class="risk-desc"><em>Mitigation:</em> ${r.mitigation}</p>` : ''}
                     <div class="risk-metrics">
-                        <span class="risk-badge risk-badge-${level}">Impact ${impact}/10</span>
+                        <span class="risk-badge risk-badge-${level}">Impact ${displayImpact}/100</span>
                         <span class="risk-badge">Probability ${prob}%</span>
                     </div>
                 </div>`;
@@ -383,14 +586,17 @@ function displayFinancial(financial) {
 
         if (ra.mitigation_strategy) {
             html += `<div class="mitigation-box">
-                <strong>Mitigation Strategy</strong>
+                <strong>General Strategy</strong>
                 <div class="md-block">${marked.parse(ra.mitigation_strategy)}</div>
             </div>`;
         }
         html += `</div>`;
     }
 
-    tab.innerHTML = html || '<p class="no-data">No financial data available.</p>';
+    // Clear old charts container and reset HTML
+    const container = document.getElementById('financialCharts');
+    if (container) container.innerHTML = '';
+    document.getElementById('financialContent').innerHTML = html || '<p class="no-data">No financial data available.</p>';
 }
 
 function displayGTM(gtm) {
@@ -463,16 +669,16 @@ function displayAgents(results) {
     const tab = document.getElementById('agentsTab');
 
     const agents = [
-        { icon: '📊', name: 'Market Analyzer',            role: 'Market trends & conditions',   data: results.phase1_validation?.market },
-        { icon: '👥', name: 'Customer Insight Specialist', role: 'User personas & pain points',   data: results.phase1_validation?.customer },
-        { icon: '🎯', name: 'Competitive Intelligence',   role: 'Competitor benchmarking',       data: results.phase1_validation?.competitors },
-        { icon: '💰', name: 'Revenue Architect',          role: 'Subscription & revenue model',  data: results.phase2_financial?.revenue },
-        { icon: '💵', name: 'Pricing Strategist',         role: 'Pricing tiers & strategy',      data: results.phase2_financial?.pricing },
-        { icon: '⚠️', name: 'Risk Assessment Officer',    role: 'Financial risk analysis',       data: results.phase2_financial?.risk },
-        { icon: '🚀', name: 'GTM Strategist',             role: 'Go-to-market planning',         data: results.phase3_gtm?.strategy },
-        { icon: '✨', name: 'Product Roadmap Lead',       role: 'Feature prioritization',        data: results.phase3_gtm?.features },
-        { icon: '⚖️', name: 'Launch Director',            role: 'Final GO/NO-GO decision',       data: results.final_decision },
-        { icon: '🧠', name: 'Master Orchestrator',        role: 'Executive synthesis',           data: results.master_synthesis },
+        { icon: '📊', name: 'Market Analyzer', role: 'Market trends & conditions', data: results.phase1_validation?.market },
+        { icon: '👥', name: 'Customer Insight Specialist', role: 'User personas & pain points', data: results.phase1_validation?.customer },
+        { icon: '🎯', name: 'Competitive Intelligence', role: 'Competitor benchmarking', data: results.phase1_validation?.competitors },
+        { icon: '💰', name: 'Revenue Architect', role: 'Subscription & revenue model', data: results.phase2_financial?.revenue },
+        { icon: '💵', name: 'Pricing Strategist', role: 'Pricing tiers & strategy', data: results.phase2_financial?.pricing },
+        { icon: '⚠️', name: 'Risk Assessment Officer', role: 'Financial risk analysis', data: results.phase2_financial?.risk },
+        { icon: '🚀', name: 'GTM Strategist', role: 'Go-to-market planning', data: results.phase3_gtm?.strategy },
+        { icon: '✨', name: 'Product Roadmap Lead', role: 'Feature prioritization', data: results.phase3_gtm?.features },
+        { icon: '⚖️', name: 'Launch Director', role: 'Final GO/NO-GO decision', data: results.final_decision },
+        { icon: '🧠', name: 'Master Orchestrator', role: 'Executive synthesis', data: results.master_synthesis },
     ];
 
     let html = '<div class="agent-grid">';
