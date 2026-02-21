@@ -39,6 +39,68 @@ function buildProductContext() {
     return parts.join('\n');
 }
 
+// ── Non-Negotiable Required Fields ─────────────────────────
+const REQUIRED_FIELDS = [
+    { id: 'productIdea', label: 'Product Description', type: 'textarea' },
+    { id: 'industry', label: 'Industry', type: 'select' },
+    { id: 'businessModel', label: 'Business Model', type: 'select' },
+    { id: 'targetAudience', label: 'Target Audience', type: 'select' },
+];
+
+function validateRequiredFields() {
+    const missing = [];
+    // Clear previous error styling
+    document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+
+    REQUIRED_FIELDS.forEach(f => {
+        const el = document.getElementById(f.id);
+        const val = (el.value || '').trim();
+        if (!val) {
+            missing.push(f.label);
+            el.classList.add('field-error');
+            // Auto-clear error on change
+            el.addEventListener('input', () => el.classList.remove('field-error'), { once: true });
+            el.addEventListener('change', () => el.classList.remove('field-error'), { once: true });
+        }
+    });
+
+    if (missing.length > 0) {
+        alert(`Please fill in these required fields before running a simulation:\n\n• ${missing.join('\n• ')}`);
+        return false;
+    }
+    return true;
+}
+
+// ── Input-Driven Confidence Score (0–100) ──────────────────
+function calculateInputConfidence() {
+    let score = 0;
+
+    // Product Description – 25 pts (scaled by length)
+    const desc = (document.getElementById('productIdea').value || '').trim();
+    if (desc.length >= 50) score += 25;
+    else if (desc.length >= 20) score += Math.round((desc.length / 50) * 25);
+
+    // Industry – 15 pts
+    if (document.getElementById('industry').value) score += 15;
+
+    // Business Model – 15 pts
+    if (document.getElementById('businessModel').value) score += 15;
+
+    // Target Audience – 15 pts
+    if (document.getElementById('targetAudience').value) score += 15;
+
+    // Funding Stage – 10 pts
+    if (document.getElementById('fundingStage').value) score += 10;
+
+    // Geography – 10 pts
+    if (document.getElementById('geography').value) score += 10;
+
+    // Launch Timeline – 10 pts
+    if (document.getElementById('launchTimeline').value) score += 10;
+
+    return score;
+}
+
 // Simulate phase updates (since we don't have WebSocket)
 function simulatePhaseProgress() {
     const phases = document.querySelectorAll('.phase');
@@ -72,12 +134,11 @@ function updatePhaseStatus(phase, status, text) {
 }
 
 async function analyzeProduct() {
-    const context = buildProductContext();
+    // Validate non-negotiable required fields
+    if (!validateRequiredFields()) return;
 
-    if (!context) {
-        alert('Please enter at least a product name or description');
-        return;
-    }
+    const context = buildProductContext();
+    if (!context) return;
 
     if (isAnalyzing) return;
 
@@ -205,8 +266,18 @@ function displayDecision(decision) {
 
     let html = '';
 
+    // ── Input Confidence Score (based on user's specific inputs) ───
+    const inputConf = calculateInputConfidence();
+    const confColor = inputConf >= 75 ? '#10b981' : inputConf >= 50 ? '#f59e0b' : '#ef4444';
+    const confLabel = inputConf >= 75 ? 'High' : inputConf >= 50 ? 'Medium' : 'Low';
+
+    html += `<div class="input-confidence-section">`;
+    html += `<p class="confidence-line"><strong>Input Confidence:</strong> <span class="confidence-value" style="color:${confColor}">${inputConf}%</span> <span style="font-size:0.75rem;color:var(--text-muted)">(${confLabel} — based on your inputs)</span></p>`;
+    html += `<div class="confidence-bar"><div class="confidence-fill" style="width:${inputConf}%;background:${confColor}"></div></div>`;
+    html += `</div>`;
+
     if (decision.confidence_score !== undefined) {
-        html += `<p class="confidence-line"><strong>Confidence Score:</strong> <span class="confidence-value">${decision.confidence_score}/100</span></p>`;
+        html += `<p class="confidence-line"><strong>AI Confidence:</strong> <span class="confidence-value">${decision.confidence_score}/100</span></p>`;
     }
 
     if (decision.reasoning_summary) {
