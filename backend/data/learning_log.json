@@ -184,5 +184,67 @@
         "change": -0.0192
       }
     }
+  },
+  {
+    "run_id": 4,
+    "timestamp": "2026-02-21T13:38:44.780490",
+    "product_idea_summary": "Product Name: Amazee\nDescription: ws\nIndustry: E-commerce\nBusiness Model: E-commerce / D2C\nTarget Audience: B2B (SMBs)\nF...",
+    "decision": "GO",
+    "agents": {
+      "Market Analyzer": {
+        "credibility": 0.9379,
+        "previous": 0.9622,
+        "normalized_error": 0.2806,
+        "change": -0.0243
+      },
+      "Customer Insight Specialist": {
+        "credibility": 0.9443,
+        "previous": 0.9442,
+        "normalized_error": 0.0549,
+        "change": 0.0001
+      },
+      "Competitive Intelligence lead": {
+        "credibility": 0.9691,
+        "previous": 0.9755,
+        "normalized_error": 0.0882,
+        "change": -0.0064
+      },
+      "Revenue Architect": {
+        "credibility": 0.9373,
+        "previous": 0.9396,
+        "normalized_error": 0.0835,
+        "change": -0.0023
+      },
+      "Pricing Strategist": {
+        "credibility": 0.9214,
+        "previous": 0.9416,
+        "normalized_error": 0.2601,
+        "change": -0.0202
+      },
+      "Risk Assessment Officer": {
+        "credibility": 0.9274,
+        "previous": 0.9487,
+        "normalized_error": 0.264,
+        "change": -0.0213
+      },
+      "GTM Strategist": {
+        "credibility": 0.9542,
+        "previous": 0.9545,
+        "normalized_error": 0.0486,
+        "change": -0.0003
+      },
+      "Product Roadmap lead": {
+        "credibility": 0.9609,
+        "previous": 0.96,
+        "normalized_error": 0.0314,
+        "change": 0.0009
+      },
+      "Launch Director": {
+        "credibility": 0.9451,
+        "previous": 0.9406,
+        "normalized_error": 0.0143,
+        "change": 0.0045
+      }
+    }
   }
 ]
