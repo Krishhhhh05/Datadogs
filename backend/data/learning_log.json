@@ -1,0 +1,64 @@
+[
+  {
+    "run_id": 1,
+    "timestamp": "2026-02-21T12:37:46.316569",
+    "product_idea_summary": "Product Name: NestEgg AI\nDescription: NestEgg AI is an AI-powered financial planning and cash flow \nforecasting tool for...",
+    "decision": "GO",
+    "agents": {
+      "Market Analyzer": {
+        "credibility": 0.9949,
+        "previous": 1.0,
+        "normalized_error": 0.0508,
+        "change": -0.0051
+      },
+      "Customer Insight Specialist": {
+        "credibility": 0.9855,
+        "previous": 1.0,
+        "normalized_error": 0.1455,
+        "change": -0.0145
+      },
+      "Competitive Intelligence lead": {
+        "credibility": 0.988,
+        "previous": 1.0,
+        "normalized_error": 0.1197,
+        "change": -0.012
+      },
+      "Revenue Architect": {
+        "credibility": 0.973,
+        "previous": 1.0,
+        "normalized_error": 0.2704,
+        "change": -0.027
+      },
+      "Pricing Strategist": {
+        "credibility": 0.9889,
+        "previous": 1.0,
+        "normalized_error": 0.1112,
+        "change": -0.0111
+      },
+      "Risk Assessment Officer": {
+        "credibility": 0.9739,
+        "previous": 1.0,
+        "normalized_error": 0.2607,
+        "change": -0.0261
+      },
+      "GTM Strategist": {
+        "credibility": 0.9887,
+        "previous": 1.0,
+        "normalized_error": 0.1134,
+        "change": -0.0113
+      },
+      "Product Roadmap lead": {
+        "credibility": 0.9995,
+        "previous": 1.0,
+        "normalized_error": 0.0049,
+        "change": -0.0005
+      },
+      "Launch Director": {
+        "credibility": 0.9786,
+        "previous": 1.0,
+        "normalized_error": 0.2137,
+        "change": -0.0214
+      }
+    }
+  }
+]
