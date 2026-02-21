@@ -122,5 +122,67 @@
         "change": -0.0189
       }
     }
+  },
+  {
+    "run_id": 3,
+    "timestamp": "2026-02-21T12:49:01.868853",
+    "product_idea_summary": "Product Name: HELLO\nDescription: VOICE FOR PEOPLE WHO ARE NOT HEARD\nIndustry: E-commerce\nBusiness Model: E-commerce / D2...",
+    "decision": "GO",
+    "agents": {
+      "Market Analyzer": {
+        "credibility": 0.9622,
+        "previous": 0.9885,
+        "normalized_error": 0.2744,
+        "change": -0.0263
+      },
+      "Customer Insight Specialist": {
+        "credibility": 0.9442,
+        "previous": 0.96,
+        "normalized_error": 0.1983,
+        "change": -0.0158
+      },
+      "Competitive Intelligence lead": {
+        "credibility": 0.9755,
+        "previous": 0.974,
+        "normalized_error": 0.0111,
+        "change": 0.0015
+      },
+      "Revenue Architect": {
+        "credibility": 0.9396,
+        "previous": 0.9612,
+        "normalized_error": 0.2545,
+        "change": -0.0216
+      },
+      "Pricing Strategist": {
+        "credibility": 0.9416,
+        "previous": 0.9632,
+        "normalized_error": 0.2529,
+        "change": -0.0216
+      },
+      "Risk Assessment Officer": {
+        "credibility": 0.9487,
+        "previous": 0.959,
+        "normalized_error": 0.1438,
+        "change": -0.0103
+      },
+      "GTM Strategist": {
+        "credibility": 0.9545,
+        "previous": 0.9731,
+        "normalized_error": 0.2132,
+        "change": -0.0186
+      },
+      "Product Roadmap lead": {
+        "credibility": 0.96,
+        "previous": 0.9768,
+        "normalized_error": 0.191,
+        "change": -0.0168
+      },
+      "Launch Director": {
+        "credibility": 0.9406,
+        "previous": 0.9597,
+        "normalized_error": 0.2318,
+        "change": -0.0192
+      }
+    }
   }
 ]
