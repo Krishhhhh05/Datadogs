@@ -246,5 +246,315 @@
         "change": 0.0045
       }
     }
+  },
+  {
+    "run_id": 5,
+    "timestamp": "2026-02-21T13:49:51.725883",
+    "product_idea_summary": "Product Name: Eddify\nDescription: Eddify is an AI-powered personalized learning platform that \nhelps students aged 14-25...",
+    "decision": "UNKNOWN",
+    "agents": {
+      "Market Analyzer": {
+        "credibility": 0.9294,
+        "previous": 0.9379,
+        "normalized_error": 0.1476,
+        "change": -0.0086
+      },
+      "Customer Insight Specialist": {
+        "credibility": 0.9303,
+        "previous": 0.9443,
+        "normalized_error": 0.1959,
+        "change": -0.014
+      },
+      "Competitive Intelligence lead": {
+        "credibility": 0.9546,
+        "previous": 0.9691,
+        "normalized_error": 0.176,
+        "change": -0.0145
+      },
+      "Revenue Architect": {
+        "credibility": 0.94,
+        "previous": 0.9373,
+        "normalized_error": 0.0358,
+        "change": 0.0027
+      },
+      "Pricing Strategist": {
+        "credibility": 0.9088,
+        "previous": 0.9214,
+        "normalized_error": 0.2052,
+        "change": -0.0127
+      },
+      "Risk Assessment Officer": {
+        "credibility": 0.9275,
+        "previous": 0.9274,
+        "normalized_error": 0.0719,
+        "change": 0.0001
+      },
+      "GTM Strategist": {
+        "credibility": 0.9442,
+        "previous": 0.9542,
+        "normalized_error": 0.1459,
+        "change": -0.01
+      },
+      "Product Roadmap lead": {
+        "credibility": 0.9389,
+        "previous": 0.9609,
+        "normalized_error": 0.2586,
+        "change": -0.0219
+      },
+      "Launch Director": {
+        "credibility": 0.9397,
+        "previous": 0.9451,
+        "normalized_error": 0.1086,
+        "change": -0.0054
+      }
+    }
+  },
+  {
+    "run_id": 6,
+    "timestamp": "2026-02-21T14:17:30.619658",
+    "product_idea_summary": "Product Name: Eddify\nDescription: Eddify is an AI-powered personalized learning platform that \nhelps students aged 14-25...",
+    "decision": "UNKNOWN",
+    "agents": {
+      "Market Analyzer": {
+        "credibility": 0.9151,
+        "previous": 0.9294,
+        "normalized_error": 0.213,
+        "change": -0.0142
+      },
+      "Customer Insight Specialist": {
+        "credibility": 0.9101,
+        "previous": 0.9303,
+        "normalized_error": 0.2719,
+        "change": -0.0202
+      },
+      "Competitive Intelligence lead": {
+        "credibility": 0.9518,
+        "previous": 0.9546,
+        "normalized_error": 0.0733,
+        "change": -0.0028
+      },
+      "Revenue Architect": {
+        "credibility": 0.9232,
+        "previous": 0.94,
+        "normalized_error": 0.2282,
+        "change": -0.0168
+      },
+      "Pricing Strategist": {
+        "credibility": 0.8941,
+        "previous": 0.9088,
+        "normalized_error": 0.2382,
+        "change": -0.0147
+      },
+      "Risk Assessment Officer": {
+        "credibility": 0.9303,
+        "previous": 0.9275,
+        "normalized_error": 0.0441,
+        "change": 0.0028
+      },
+      "GTM Strategist": {
+        "credibility": 0.9359,
+        "previous": 0.9442,
+        "normalized_error": 0.1384,
+        "change": -0.0083
+      },
+      "Product Roadmap lead": {
+        "credibility": 0.918,
+        "previous": 0.9389,
+        "normalized_error": 0.27,
+        "change": -0.0209
+      },
+      "Launch Director": {
+        "credibility": 0.9247,
+        "previous": 0.9397,
+        "normalized_error": 0.2111,
+        "change": -0.0151
+      }
+    }
+  },
+  {
+    "run_id": 7,
+    "timestamp": "2026-02-21T14:20:29.842907",
+    "product_idea_summary": "Product Name: insure me\nDescription: Multiple insurances providers\nIndustry: HealthTech\nBusiness Model: E-commerce / D2C...",
+    "decision": "UNKNOWN",
+    "agents": {
+      "Market Analyzer": {
+        "credibility": 0.9221,
+        "previous": 0.9151,
+        "normalized_error": 0.0155,
+        "change": 0.0069
+      },
+      "Customer Insight Specialist": {
+        "credibility": 0.9034,
+        "previous": 0.9101,
+        "normalized_error": 0.1564,
+        "change": -0.0066
+      },
+      "Competitive Intelligence lead": {
+        "credibility": 0.928,
+        "previous": 0.9518,
+        "normalized_error": 0.2864,
+        "change": -0.0238
+      },
+      "Revenue Architect": {
+        "credibility": 0.925,
+        "previous": 0.9232,
+        "normalized_error": 0.0581,
+        "change": 0.0019
+      },
+      "Pricing Strategist": {
+        "credibility": 0.8878,
+        "previous": 0.8941,
+        "normalized_error": 0.1682,
+        "change": -0.0062
+      },
+      "Risk Assessment Officer": {
+        "credibility": 0.9247,
+        "previous": 0.9303,
+        "normalized_error": 0.1264,
+        "change": -0.0057
+      },
+      "GTM Strategist": {
+        "credibility": 0.9148,
+        "previous": 0.9359,
+        "normalized_error": 0.2758,
+        "change": -0.0212
+      },
+      "Product Roadmap lead": {
+        "credibility": 0.9201,
+        "previous": 0.918,
+        "normalized_error": 0.0616,
+        "change": 0.002
+      },
+      "Launch Director": {
+        "credibility": 0.9257,
+        "previous": 0.9247,
+        "normalized_error": 0.0647,
+        "change": 0.0011
+      }
+    }
+  },
+  {
+    "run_id": 8,
+    "timestamp": "2026-02-21T14:29:49.700229",
+    "product_idea_summary": "Product Name: nestle\nDescription: milk brand\nIndustry: E-commerce\nBusiness Model: Marketplace\nTarget Audience: B2C (cons...",
+    "decision": "UNKNOWN",
+    "agents": {
+      "Market Analyzer": {
+        "credibility": 0.9064,
+        "previous": 0.9221,
+        "normalized_error": 0.2347,
+        "change": -0.0157
+      },
+      "Customer Insight Specialist": {
+        "credibility": 0.8888,
+        "previous": 0.9034,
+        "normalized_error": 0.2424,
+        "change": -0.0146
+      },
+      "Competitive Intelligence lead": {
+        "credibility": 0.9132,
+        "previous": 0.928,
+        "normalized_error": 0.2199,
+        "change": -0.0148
+      },
+      "Revenue Architect": {
+        "credibility": 0.9212,
+        "previous": 0.925,
+        "normalized_error": 0.1134,
+        "change": -0.0038
+      },
+      "Pricing Strategist": {
+        "credibility": 0.8849,
+        "previous": 0.8878,
+        "normalized_error": 0.1416,
+        "change": -0.0029
+      },
+      "Risk Assessment Officer": {
+        "credibility": 0.9312,
+        "previous": 0.9247,
+        "normalized_error": 0.0106,
+        "change": 0.0065
+      },
+      "GTM Strategist": {
+        "credibility": 0.8985,
+        "previous": 0.9148,
+        "normalized_error": 0.2482,
+        "change": -0.0163
+      },
+      "Product Roadmap lead": {
+        "credibility": 0.926,
+        "previous": 0.9201,
+        "normalized_error": 0.0205,
+        "change": 0.0059
+      },
+      "Launch Director": {
+        "credibility": 0.9296,
+        "previous": 0.9257,
+        "normalized_error": 0.0355,
+        "change": 0.0039
+      }
+    }
+  },
+  {
+    "run_id": 9,
+    "timestamp": "2026-02-21T14:35:55.515462",
+    "product_idea_summary": "Product Name: hey6\nDescription: new insurance options\nIndustry: HealthTech\nBusiness Model: Marketplace\nTarget Audience: ...",
+    "decision": "UNKNOWN",
+    "agents": {
+      "Market Analyzer": {
+        "credibility": 0.9014,
+        "previous": 0.9064,
+        "normalized_error": 0.1435,
+        "change": -0.005
+      },
+      "Customer Insight Specialist": {
+        "credibility": 0.8929,
+        "previous": 0.8888,
+        "normalized_error": 0.0701,
+        "change": 0.0041
+      },
+      "Competitive Intelligence lead": {
+        "credibility": 0.9133,
+        "previous": 0.9132,
+        "normalized_error": 0.0861,
+        "change": 0.0001
+      },
+      "Revenue Architect": {
+        "credibility": 0.9249,
+        "previous": 0.9212,
+        "normalized_error": 0.0423,
+        "change": 0.0037
+      },
+      "Pricing Strategist": {
+        "credibility": 0.877,
+        "previous": 0.8849,
+        "normalized_error": 0.1945,
+        "change": -0.0079
+      },
+      "Risk Assessment Officer": {
+        "credibility": 0.9082,
+        "previous": 0.9312,
+        "normalized_error": 0.2989,
+        "change": -0.023
+      },
+      "GTM Strategist": {
+        "credibility": 0.9042,
+        "previous": 0.8985,
+        "normalized_error": 0.044,
+        "change": 0.0058
+      },
+      "Product Roadmap lead": {
+        "credibility": 0.9083,
+        "previous": 0.926,
+        "normalized_error": 0.2509,
+        "change": -0.0177
+      },
+      "Launch Director": {
+        "credibility": 0.9204,
+        "previous": 0.9296,
+        "normalized_error": 0.1628,
+        "change": -0.0092
+      }
+    }
   }
 ]

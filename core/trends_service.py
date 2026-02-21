@@ -17,8 +17,10 @@ class GoogleTrendsService:
     def get_interest_over_time(self, keywords: List[str], timeframe: str = 'today 12-m') -> Optional[Dict[str, Any]]:
         """
         Fetches interest over time for a list of keywords.
-        Returns a dictionary mapping keywords to their trend data (as a list of values),
-        or None if the request failed (e.g., due to rate limiting).
+        Returns a dictionary with:
+          - 'dates': list of date strings (YYYY-MM-DD)
+          - keyword: list of int values (0-100)
+        Or None if the request failed.
         """
         if not keywords:
             return None
@@ -43,12 +45,13 @@ class GoogleTrendsService:
                 if 'isPartial' in df.columns:
                     df = df.drop(columns=['isPartial'])
 
-                # Convert dataframe to a dictionary format suitable for JSON serialization
-                result = {}
+                # Build result with labeled dates
+                result = {
+                    "dates": [d.strftime('%Y-%m-%d') for d in df.index],
+                }
                 for kw in keywords:
                     if kw in df.columns:
-                        # Convert to standard Python types (int)
-                        result[kw] = df[kw].tolist()
+                        result[kw] = [int(v) for v in df[kw].tolist()]
                     else:
                         result[kw] = []
 

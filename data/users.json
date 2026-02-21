@@ -16,5 +16,11 @@
     "password": "Googlebhuvi*3",
     "name": "bhuvi ghosh",
     "role": "analyst"
+  },
+  {
+    "username": "newuser",
+    "password": "hello",
+    "name": "newuser",
+    "role": "analyst"
   }
 ]

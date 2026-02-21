@@ -519,7 +519,10 @@ function displayValidation(validation) {
             const keywords = marketTrends.keywords;
             const trendData = marketTrends.data;
             const maxLen = Math.max(...keywords.map(k => (trendData[k] || []).length));
-            const labels = Array.from({ length: maxLen }, (_, i) => `W${i + 1}`);
+            // Use actual dates from pytrends if available, otherwise fall back to week numbers
+            const labels = trendData.dates
+                ? trendData.dates.map(d => d.slice(0, 7))  // YYYY-MM
+                : Array.from({ length: maxLen }, (_, i) => `W${i + 1}`);
             const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
             const datasets = keywords.map((kw, i) => ({
@@ -575,7 +578,9 @@ function displayValidation(validation) {
             const keywords = compTrends.keywords;
             const trendData = compTrends.data;
             const maxLen = Math.max(...keywords.map(k => (trendData[k] || []).length));
-            const labels = Array.from({ length: maxLen }, (_, i) => `W${i + 1}`);
+            const labels = trendData.dates
+                ? trendData.dates.map(d => d.slice(0, 7))
+                : Array.from({ length: maxLen }, (_, i) => `W${i + 1}`);
             const colors = ['#ec4899', '#06b6d4', '#f97316', '#14b8a6', '#a855f7'];
 
             const datasets = keywords.map((kw, i) => ({
