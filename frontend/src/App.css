@@ -125,3 +125,55 @@ h3 {
 .text-indigo-200\/70 {
   color: #475569;
 }
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+}
+
+/* Markdown rendering in chat bubbles */
+.chat-markdown p { margin: 0 0 0.35em 0; line-height: 1.5; }
+.chat-markdown p:last-child { margin-bottom: 0; }
+.chat-markdown ul, .chat-markdown ol { margin: 0.3em 0 0.3em 1em; padding: 0; }
+.chat-markdown li { margin-bottom: 0.2em; }
+.chat-markdown strong { font-weight: 700; }
+.chat-markdown em { font-style: italic; }
+.chat-markdown code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: rgba(0,0,0,0.06); padding: 0.1em 0.3em; border-radius: 3px; }
+.chat-markdown h1, .chat-markdown h2, .chat-markdown h3 { font-weight: 700; margin: 0.4em 0 0.2em; }
+
+.chat-markdown-user strong { color: #fff; }
+.chat-markdown-user code { background: rgba(255,255,255,0.15); }
+
+/* Markdown in synthesis block */
+.synthesis-markdown p { margin: 0 0 0.5em 0; line-height: 1.65; }
+.synthesis-markdown p:last-child { margin-bottom: 0; }
+.synthesis-markdown ul, .synthesis-markdown ol { margin: 0.4em 0 0.4em 1.2em; }
+.synthesis-markdown li { margin-bottom: 0.25em; }
+.synthesis-markdown strong { font-weight: 700; color: #312e81; }
+.synthesis-markdown h1, .synthesis-markdown h2, .synthesis-markdown h3 { font-weight: 800; margin: 0.6em 0 0.3em; color: #312e81; }
+
+/* Markdown in agent cards */
+.agent-markdown p { margin: 0 0 0.3em 0; line-height: 1.5; font-size: 11px; color: #374151; }
+.agent-markdown p:last-child { margin-bottom: 0; }
+.agent-markdown ul, .agent-markdown ol { margin: 0.25em 0 0.25em 1em; font-size: 10px; color: #374151; }
+.agent-markdown li { margin-bottom: 0.15em; }
+.agent-markdown strong { font-weight: 700; color: #1e1b4b; }
+.agent-markdown code { font-family: 'JetBrains Mono', monospace; font-size: 9px; background: rgba(99,102,241,0.08); padding: 0.1em 0.25em; border-radius: 3px; }

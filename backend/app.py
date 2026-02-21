@@ -29,5 +29,22 @@ def simulate():
     finally:
         loop.close()
 
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json
+    message = data.get('message')
+    context = data.get('context')
+    
+    if not message:
+        return jsonify({"error": "No message provided"}), 400
+        
+    try:
+        response = orchestrator.master_agent.chat(message, context)
+        return jsonify(response)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)

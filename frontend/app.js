@@ -15,6 +15,29 @@ let isAnalyzing = false;
 // Event Listeners
 analyzeBtn.addEventListener('click', analyzeProduct);
 
+function buildProductContext() {
+    const name = document.getElementById('productName').value.trim();
+    const idea = productIdea.value.trim();
+    const industry = document.getElementById('industry').value;
+    const businessModel = document.getElementById('businessModel').value;
+    const targetAudience = document.getElementById('targetAudience').value;
+    const fundingStage = document.getElementById('fundingStage').value;
+    const geography = document.getElementById('geography').value;
+    const launchTimeline = document.getElementById('launchTimeline').value;
+
+    const parts = [];
+    if (name)           parts.push(`Product Name: ${name}`);
+    if (idea)           parts.push(`Description: ${idea}`);
+    if (industry)       parts.push(`Industry: ${industry}`);
+    if (businessModel)  parts.push(`Business Model: ${businessModel}`);
+    if (targetAudience) parts.push(`Target Audience: ${targetAudience}`);
+    if (fundingStage)   parts.push(`Funding Stage: ${fundingStage}`);
+    if (geography)      parts.push(`Geographic Focus: ${geography}`);
+    if (launchTimeline) parts.push(`Launch Timeline: ${launchTimeline}`);
+
+    return parts.join('\n');
+}
+
 // Simulate phase updates (since we don't have WebSocket)
 function simulatePhaseProgress() {
     const phases = document.querySelectorAll('.phase');
@@ -48,10 +71,10 @@ function updatePhaseStatus(phase, status, text) {
 }
 
 async function analyzeProduct() {
-    const idea = productIdea.value.trim();
+    const context = buildProductContext();
 
-    if (!idea) {
-        alert('Please enter a product idea');
+    if (!context) {
+        alert('Please enter at least a product name or description');
         return;
     }
 
@@ -83,7 +106,7 @@ async function analyzeProduct() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ product_idea: idea })
+            body: JSON.stringify({ product_idea: context })
         });
 
         if (!response.ok) {
@@ -95,7 +118,7 @@ async function analyzeProduct() {
 
     } catch (error) {
         console.error('Error:', error);
-        alert('Failed to analyze product. Make sure the backend server is running on port 5000.');
+        alert('Failed to analyze product. Make sure the backend server is running on port 5001.');
     } finally {
         isAnalyzing = false;
         analyzeBtn.disabled = false;
@@ -107,6 +130,37 @@ async function analyzeProduct() {
 function displayResults(results) {
     resultsSection.classList.remove('hidden');
     resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+    // Show product name badge
+    const productName = document.getElementById('productName').value.trim();
+    const nameBadge = document.getElementById('productNameBadge');
+    if (productName) {
+        nameBadge.textContent = productName;
+        nameBadge.classList.remove('hidden');
+    } else {
+        nameBadge.classList.add('hidden');
+    }
+
+    // Show product meta (structured inputs)
+    const metaFields = [
+        { id: 'industry',       label: 'Industry' },
+        { id: 'businessModel',  label: 'Model' },
+        { id: 'targetAudience', label: 'Audience' },
+        { id: 'fundingStage',   label: 'Stage' },
+        { id: 'geography',      label: 'Geography' },
+        { id: 'launchTimeline', label: 'Timeline' },
+    ];
+    const metaEl = document.getElementById('productMeta');
+    const chips = metaFields
+        .filter(f => document.getElementById(f.id).value)
+        .map(f => `<span class="meta-chip"><strong>${f.label}:</strong> ${document.getElementById(f.id).value}</span>`)
+        .join('');
+    if (chips) {
+        metaEl.innerHTML = chips;
+        metaEl.classList.remove('hidden');
+    } else {
+        metaEl.classList.add('hidden');
+    }
 
     // Display decision
     displayDecision(results.final_decision);
