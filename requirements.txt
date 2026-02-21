@@ -1,8 +1,0 @@
-groq
-python-dotenv
-pydantic
-typing-extensions
-flask
-flask-cors
-pytrends
-pandas

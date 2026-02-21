@@ -2,6 +2,7 @@ import json
 import os
 from typing import Any, Dict, Optional
 import anthropic
+import braintrust
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,6 +28,7 @@ class BaseAgent:
         self.client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
         self.credibility_score = 1.0  # Initial perfect score
 
+    @braintrust.traced(name="agent_call")
     def call_groq(self, system_prompt: str, user_prompt: str, max_retries: int = 3) -> Dict[str, Any]:
         """
         Calls the Claude API and strictly expects a JSON response.

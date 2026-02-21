@@ -8,7 +8,7 @@
   {
     "username": "datadogs",
     "password": "launch2026",
-    "name": "DataDogs Team",
+    "name": "Venture Forge Team",
     "role": "analyst"
   },
   {
@@ -21,6 +21,12 @@
     "username": "newuser",
     "password": "hello",
     "name": "newuser",
+    "role": "analyst"
+  },
+  {
+    "username": "krisha",
+    "password": "krisha",
+    "name": "Krisha",
     "role": "analyst"
   }
 ]

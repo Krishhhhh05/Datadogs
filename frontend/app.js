@@ -133,6 +133,127 @@ function updatePhaseStatus(phase, status, text) {
     phase.querySelector('.phase-status').textContent = text;
 }
 
+// ── Audio Recording & File Uploads (Modulate STT) ──────────────
+let mediaRecorder;
+let sttSocket;
+let isRecording = false;
+
+const startRecording = async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+        sttSocket = new WebSocket(`ws://${location.host}/ws/stt`);
+
+        sttSocket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'utterance' && data.utterance && data.utterance.text) {
+                const textarea = document.getElementById('productIdea');
+                let currentText = textarea.value.trim();
+                if (currentText && !currentText.endsWith('.')) {
+                    currentText += '. ';
+                } else if (currentText) {
+                    currentText += ' ';
+                }
+                textarea.value = currentText + data.utterance.text;
+                // Auto-grow textarea if needed
+                textarea.scrollTop = textarea.scrollHeight;
+            } else if (data.type === 'error') {
+                console.error("STT Error:", data.error);
+                stopRecording();
+            }
+        };
+
+        sttSocket.onopen = () => {
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0 && sttSocket.readyState === WebSocket.OPEN) {
+                    sttSocket.send(e.data);
+                }
+            };
+            // Send chunk every 250ms for live streaming
+            mediaRecorder.start(250);
+
+            isRecording = true;
+            document.getElementById('recordBtn').classList.add('recording');
+            document.getElementById('recordBtn').innerHTML = '⏹️ Stop Recording';
+            document.getElementById('recordingIndicator').classList.remove('hidden');
+        };
+
+        sttSocket.onclose = () => {
+            // Socket closed. User must manually click Analyze.
+        };
+
+    } catch (err) {
+        console.error("Microphone access denied:", err);
+        alert("Microphone access is required to use speech-to-text.");
+    }
+};
+
+const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    }
+    if (sttSocket && sttSocket.readyState === WebSocket.OPEN) {
+        // Send empty text frame to signal end of stream
+        sttSocket.send("");
+    }
+
+    isRecording = false;
+    document.getElementById('recordBtn').classList.remove('recording');
+    document.getElementById('recordBtn').innerHTML = '🎙️ Speak Idea';
+    document.getElementById('recordingIndicator').classList.add('hidden');
+};
+
+const uploadAudioFile = (file) => {
+    if (!file) return;
+
+    const socket = new WebSocket(`ws://${location.host}/ws/stt`);
+
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'utterance' && data.utterance && data.utterance.text) {
+            const textarea = document.getElementById('productIdea');
+            const currentText = textarea.value ? textarea.value + " " : "";
+            textarea.value = currentText + data.utterance.text;
+        }
+    };
+
+    socket.onopen = () => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const arrayBuffer = e.target.result;
+            // Send binary chunk directly
+            socket.send(arrayBuffer);
+            // Then signal done
+            socket.send("");
+        };
+        reader.readAsArrayBuffer(file);
+    };
+
+    socket.onclose = () => {
+        // Socket closed. User must manually click Analyze.
+    };
+};
+
+document.getElementById('recordBtn').addEventListener('click', () => {
+    if (isRecording) {
+        stopRecording();
+    } else {
+        startRecording();
+    }
+});
+
+document.getElementById('audioUpload').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        uploadAudioFile(file);
+        // Reset so it can be uploaded again if needed
+        e.target.value = '';
+    }
+});
+// ─────────────────────────────────────────────────────────────
+
 async function analyzeProduct() {
     // Validate non-negotiable required fields
     if (!validateRequiredFields()) return;

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DataDogs - AI Product Launch OS</title>
+    <title>Venture Forge - AI Product Launch OS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         // Auth guard — redirect to login if not authenticated
-        if (!sessionStorage.getItem('datadogs_user')) {
+        if (!sessionStorage.getItem('venture_forge_user')) {
             window.location.href = 'login.html';
         }
     </script>
@@ -24,7 +24,7 @@
         <header class="header">
             <div class="header-row">
                 <div class="logo">
-                    <h1>🚀 DataDogs</h1>
+                    <h1>🚀 Venture Forge</h1>
                 </div>
                 <div class="user-badge" id="userBadge"></div>
             </div>
@@ -33,11 +33,11 @@
         <script>
             // Show user badge + logout
             (function () {
-                const raw = sessionStorage.getItem('datadogs_user');
+                const raw = sessionStorage.getItem('venture_forge_user');
                 if (!raw) return;
                 const user = JSON.parse(raw);
                 const badge = document.getElementById('userBadge');
-                badge.innerHTML = `<span class="user-name">👤 ${user.name || user.username}</span><button class="logout-btn" onclick="sessionStorage.removeItem('datadogs_user'); window.location.href='login.html';">Logout</button>`;
+                badge.innerHTML = `<span class="user-name">👤 ${user.name || user.username}</span><button class="logout-btn" onclick="sessionStorage.removeItem('venture_forge_user'); window.location.href='login.html';">Logout</button>`;
             })();
         </script>
 
@@ -141,8 +141,23 @@
                 <!-- Product Idea Description -->
                 <div class="form-group">
                     <label for="productIdea">Product Description</label>
-                    <textarea id="productIdea" rows="4"
-                        placeholder="Describe your product idea, target market, and key value proposition..."></textarea>
+                    <div class="textarea-wrapper">
+                        <textarea id="productIdea" rows="4"
+                            placeholder="Describe your product idea, target market, and key value proposition..."></textarea>
+
+                        <!-- Audio Controls -->
+                        <div class="audio-controls">
+                            <button id="recordBtn" class="audio-btn" title="Record Audio">
+                                🎙️ Speak Idea
+                            </button>
+                            <span id="recordingIndicator" class="recording-dot hidden"></span>
+
+                            <label for="audioUpload" class="audio-btn upload-btn" title="Upload Audio File">
+                                📁 Upload Audio
+                            </label>
+                            <input type="file" id="audioUpload" accept="audio/*" class="hidden">
+                        </div>
+                    </div>
                 </div>
 
                 <button id="analyzeBtn" class="primary-btn">
@@ -247,7 +262,7 @@
         </section>
 
         <footer class="footer">
-            <p>DataDogs &mdash; Multi-Agent Product OS &mdash; Powered by Groq AI</p>
+            <p>Venture Forge &mdash; Multi-Agent Product OS &mdash; Powered by Groq AI</p>
         </footer>
     </div>
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataDogs — Login</title>
+    <title>Venture Forge — Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
@@ -227,7 +227,7 @@
         <div class="login-card">
             <div class="login-header">
                 <div class="login-logo">🐾</div>
-                <div class="login-title">DataDogs</div>
+                <div class="login-title">Venture Forge</div>
                 <div class="login-subtitle" id="formSubtitle">Multi-Agent Product Launch OS</div>
             </div>
 
@@ -279,7 +279,7 @@
     <script>
         const API_URL = 'http://localhost:5001';
 
-        if (sessionStorage.getItem('datadogs_user')) {
+        if (sessionStorage.getItem('venture_forge_user')) {
             window.location.href = 'app.html';
         }
 
@@ -316,7 +316,7 @@
                 });
                 const data = await res.json();
                 if (res.ok && data.success) {
-                    sessionStorage.setItem('datadogs_user', JSON.stringify(data.user));
+                    sessionStorage.setItem('venture_forge_user', JSON.stringify(data.user));
                     window.location.href = 'app.html';
                 } else {
                     errorEl.textContent = data.error || 'Invalid username or password';

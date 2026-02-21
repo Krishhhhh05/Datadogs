@@ -1,10 +1,10 @@
-# 🐾 DataDogs — Multi-Agent Product Launch OS
+# 🐾 Venture Forge — Multi-Agent Product Launch OS
 
 <div align="center">
 
 **AI-powered multi-agent system that analyzes product ideas and delivers data-driven GO / NO-GO launch decisions**
 
-![DataDogs](https://img.shields.io/badge/DataDogs-v2.0-6366f1?style=for-the-badge)
+![Venture Forge](https://img.shields.io/badge/Venture_Forge-v2.0-6366f1?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.12+-10b981?style=for-the-badge)
 ![Groq](https://img.shields.io/badge/Groq-Llama_3.3_70B-f59e0b?style=for-the-badge)
 ![Agents](https://img.shields.io/badge/AI_Agents-9-8b5cf6?style=for-the-badge)
@@ -13,9 +13,9 @@
 
 ---
 
-## ✨ What is DataDogs?
+## ✨ What is Venture Forge?
 
-DataDogs is an intelligent product launch operating system powered by **9 specialized AI agents** that work in parallel and sequence across **4 analysis phases** to evaluate your product idea end-to-end:
+Venture Forge is an intelligent product launch operating system powered by **9 specialized AI agents** that work in parallel and sequence across **4 analysis phases** to evaluate your product idea end-to-end:
 
 | Phase | Agents | What They Do |
 |-------|--------|--------------|
@@ -200,7 +200,7 @@ Built with [Groq](https://groq.com) · [Flask](https://flask.palletsprojects.com
 
 <div align="center">
 
-**Made with ❤️ by DataDogs**
+**Made with ❤️ by Venture Forge**
 
 *Where product ideas meet intelligent multi-agent analysis*
 

@@ -3,7 +3,10 @@ import json
 import os
 import random
 from datetime import datetime
+from typing import Any, Dict
+
 from typing import Any, Dict, List
+import braintrust
 from core.base_agent import BaseAgent
 from agents.validation import MarketAgent, CustomerAgent, CompetitiveAgent
 from agents.financial import RevenueAgent, PricingAgent, RiskAgent
@@ -85,12 +88,25 @@ class ProductLaunchOrchestrator:
             # Simulate normalized error (0 = perfect, 1 = worst)
             error = round(random.uniform(0.0, 0.3), 4)
             agent.update_credibility(error)
-            agents_snapshot[agent.name] = {
+            
+            snapshot_data = {
                 "credibility": round(agent.credibility_score, 4),
                 "previous": round(old_score, 4),
                 "normalized_error": error,
                 "change": round(agent.credibility_score - old_score, 4),
             }
+            agents_snapshot[agent.name] = snapshot_data
+            
+            # Log evaluation score to Braintrust
+            try:
+                braintrust.log(
+                    name="agent_calibration",
+                    input={"product_context": product_context, "agent": agent.name},
+                    output=snapshot_data,
+                    scores={"credibility": agent.credibility_score, "error": error}
+                )
+            except Exception as e:
+                pass
 
         snapshot = {
             "run_id": run_id,
@@ -111,6 +127,12 @@ class ProductLaunchOrchestrator:
         """
         Executes the full 4-phase launch simulation.
         """
+        # Initialize Braintrust project for this run
+        try:
+            braintrust.init("Venture_Forge_AI_OS")
+        except Exception as e:
+            print(f"Braintrust init error: {e}")
+
         results = {}
 
         # --- Phase 1: Validation (Parallel) ---
