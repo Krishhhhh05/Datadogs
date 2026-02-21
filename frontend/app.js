@@ -703,8 +703,12 @@ function displayFinancial(financial) {
             }, 50);
         }
 
-        html += `<div class="info-card"><h4>💰 Revenue Model</h4>
-            <div class="metrics-grid">
+        html += `<div class="info-card"><h4>💰 Revenue Model</h4>`;
+
+        let hasRevenueContent = false;
+        if (rm.subscription_revenue !== undefined || rm.total_revenue !== undefined || rm.growth_rate || rm.margin !== undefined) {
+            hasRevenueContent = true;
+            html += `<div class="metrics-grid">
                 ${rm.subscription_revenue !== undefined ? `<div class="metric-box">
                     <div class="metric-val">$${Number(rm.subscription_revenue).toLocaleString()}</div>
                     <div class="metric-label">Subscription Revenue</div>
@@ -721,27 +725,45 @@ function displayFinancial(financial) {
                     <div class="metric-val">${rm.margin}%</div>
                     <div class="metric-label">Margin</div>
                 </div>` : ''}
-            </div>
-            ${rm.suggested_revenue_streams?.length ? `<div class="sub-section"><h5>Income Streams</h5><ul>${rm.suggested_revenue_streams.map(s => `<li>${s}</li>`).join('')}</ul></div>` : ''}
-            ${rm.ltv_assumptions ? `<div class="sub-section"><h5>LTV Assumptions</h5><p>${rm.ltv_assumptions}</p></div>` : ''}
-        </div>`;
+            </div>`;
+        }
+        if (rm.suggested_revenue_streams?.length) {
+            hasRevenueContent = true;
+            html += `<div class="sub-section"><h5>Income Streams</h5><ul>${rm.suggested_revenue_streams.map(s => `<li>${s}</li>`).join('')}</ul></div>`;
+        }
+        if (rm.ltv_assumptions) {
+            hasRevenueContent = true;
+            html += `<div class="sub-section"><h5>LTV Assumptions</h5><p>${rm.ltv_assumptions}</p></div>`;
+        }
+        // Fallback
+        if (!hasRevenueContent) {
+            html += renderObject(revenue);
+        }
+        html += `</div>`;
     }
 
     // ── Pricing Tiers ─────────────────────────────────────────────────
     const pricing = financial?.pricing;
     if (pricing) {
-        const tiers = pricing.pricing_tiers || [];
-        html += `<div class="info-card"><h4>💵 Pricing Tiers</h4><div class="tier-grid">`;
-        tiers.forEach((tier, i) => {
-            html += `<div class="tier-card${i === 1 ? ' tier-featured' : ''}">
-                <div class="tier-name">${tier.name || 'Tier'}</div>
-                <div class="tier-price">$${tier.monthly_fee}<span>/mo</span></div>
-                ${tier.features?.length ? `<ul class="tier-features">
-                    ${tier.features.map(f => `<li>${f}</li>`).join('')}
-                </ul>` : ''}
-            </div>`;
-        });
-        html += `</div></div>`;
+        const tiers = pricing.pricing_tiers || pricing.tiers || pricing.pricing_strategy?.tiers || [];
+        html += `<div class="info-card"><h4>💵 Pricing Tiers</h4>`;
+        if (tiers.length) {
+            html += `<div class="tier-grid">`;
+            tiers.forEach((tier, i) => {
+                html += `<div class="tier-card${i === 1 ? ' tier-featured' : ''}">
+                    <div class="tier-name">${tier.name || tier.tier_name || 'Tier'}</div>
+                    <div class="tier-price">$${tier.monthly_fee || tier.price || '?'}<span>/mo</span></div>
+                    ${tier.features?.length ? `<ul class="tier-features">
+                        ${tier.features.map(f => `<li>${f}</li>`).join('')}
+                    </ul>` : ''}
+                </div>`;
+            });
+            html += `</div>`;
+        } else {
+            // Fallback
+            html += renderObject(pricing);
+        }
+        html += `</div>`;
     }
 
     // ── Risk Assessment ───────────────────────────────────────────────
@@ -818,6 +840,10 @@ function displayFinancial(financial) {
                 <div class="md-block">${marked.parse(ra.mitigation_strategy)}</div>
             </div>`;
         }
+        if (!(ra.potential_risks?.length || ra.risk_matrix?.length)) {
+            // Fallback
+            html += renderObject(risk);
+        }
         html += `</div>`;
     }
 
@@ -831,13 +857,16 @@ function displayGTM(gtm) {
     const tab = document.getElementById('gtmTab');
     let html = '';
 
-    // ── GTM Strategy ──────────────────────────────────────────────────
+    // ── GTM Strategy ──────────────────────────────────────────────
     const strategy = gtm?.strategy;
     if (strategy) {
         const gs = strategy.gtm_strategy || strategy;
         html += `<div class="info-card"><h4>🚀 Go-to-Market Strategy</h4>`;
 
+        let hasGTMContent = false;
+
         if (gs.target_audience) {
+            hasGTMContent = true;
             const ta = gs.target_audience;
             html += `<div class="sub-section"><h5>Target Audience</h5>`;
             if (ta.demographics?.length) {
@@ -852,6 +881,7 @@ function displayGTM(gtm) {
         }
 
         if (gs.marketing_channels?.length) {
+            hasGTMContent = true;
             html += `<div class="sub-section"><h5>Marketing Channels</h5>
                 <div class="channel-list">
                     ${gs.marketing_channels.map(ch => `<span class="channel-chip">${ch}</span>`).join('')}
@@ -859,6 +889,7 @@ function displayGTM(gtm) {
         }
 
         if (gs.funnel_metrics && Array.isArray(gs.funnel_metrics)) {
+            hasGTMContent = true;
             setTimeout(() => {
                 const ctx = document.createElement('canvas');
                 const container = document.getElementById('gtmCharts');
@@ -871,12 +902,11 @@ function displayGTM(gtm) {
                 const labels = gs.funnel_metrics.map(f => f.name);
                 const data = gs.funnel_metrics.map(f => f.value);
 
-                // Funnel colors graduating from blue to gray/dark
                 const backgroundColors = [
-                    'rgba(102, 126, 234, 0.8)', // Awareness (Top of funnel)
-                    'rgba(118, 75, 162, 0.8)',  // Consideration
-                    'rgba(16, 185, 129, 0.8)',  // Conversion
-                    'rgba(245, 158, 11, 0.8)'   // Retention
+                    'rgba(102, 126, 234, 0.8)',
+                    'rgba(118, 75, 162, 0.8)',
+                    'rgba(16, 185, 129, 0.8)',
+                    'rgba(245, 158, 11, 0.8)'
                 ];
 
                 const chart = new Chart(ctx, {
@@ -891,13 +921,13 @@ function displayGTM(gtm) {
                         }]
                     },
                     options: {
-                        indexAxis: 'y', // Makes it a horizontal bar chart
+                        indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
                         scales: {
                             x: {
                                 beginAtZero: true,
-                                max: 100, // Funnel starts at 100%
+                                max: 100,
                                 grid: { color: 'rgba(255,255,255,0.05)' },
                                 ticks: { color: '#94a3b8', callback: value => value + '%' }
                             },
@@ -917,7 +947,7 @@ function displayGTM(gtm) {
                 activeCharts.push(chart);
             }, 50);
         } else if (gs.funnel_stages?.length) {
-            // Fallback to text funnel if no metrics data
+            hasGTMContent = true;
             html += `<div class="sub-section"><h5>Funnel Stages</h5>
                 <div class="funnel">
                     ${gs.funnel_stages.map((stage, i) => `<div class="funnel-stage">
@@ -926,27 +956,38 @@ function displayGTM(gtm) {
                     </div>`).join('')}
                 </div></div>`;
         }
+
+        // Fallback: render all strategy data if no specific keys matched
+        if (!hasGTMContent) {
+            html += renderObject(strategy);
+        }
         html += `</div>`;
     }
 
     // ── Feature Roadmap ───────────────────────────────────────────────
     const features = gtm?.features;
     if (features) {
-        const roadmap = features.roadmap?.features || features.features || [];
-        html += `<div class="info-card"><h4>✨ Feature Roadmap</h4>
-            <div class="feature-list">`;
-        [...roadmap].sort((a, b) => (a.priority || 99) - (b.priority || 99)).forEach(f => {
-            const p = f.priority || '?';
-            const pClass = p <= 2 ? 'priority-high' : p <= 4 ? 'priority-med' : 'priority-low';
-            html += `<div class="feature-item">
-                <span class="feature-priority ${pClass}">P${p}</span>
-                <div class="feature-body">
-                    <div class="feature-name">${f.name || 'Feature'}</div>
-                    ${f.description ? `<div class="feature-desc">${f.description}</div>` : ''}
-                </div>
-            </div>`;
-        });
-        html += `</div></div>`;
+        const roadmap = features.roadmap?.features || features.features || features.feature_roadmap || features.prioritized_features || [];
+        html += `<div class="info-card"><h4>✨ Feature Roadmap</h4>`;
+        if (roadmap.length) {
+            html += `<div class="feature-list">`;
+            [...roadmap].sort((a, b) => (a.priority || 99) - (b.priority || 99)).forEach(f => {
+                const p = f.priority || '?';
+                const pClass = p <= 2 ? 'priority-high' : p <= 4 ? 'priority-med' : 'priority-low';
+                html += `<div class="feature-item">
+                    <span class="feature-priority ${pClass}">P${p}</span>
+                    <div class="feature-body">
+                        <div class="feature-name">${f.name || f.feature || 'Feature'}</div>
+                        ${f.description ? `<div class="feature-desc">${f.description}</div>` : ''}
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+        } else {
+            // Fallback: render all features data
+            html += renderObject(features);
+        }
+        html += `</div>`;
     }
 
     // Clear old charts container and reset HTML
