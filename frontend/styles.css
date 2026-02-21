@@ -476,6 +476,57 @@ textarea:focus {
     font-size: 0.9rem;
 }
 
+/* Master Synthesis Card */
+.synthesis-card {
+    background: linear-gradient(135deg, #1a1f35, #1e293b);
+    border: 2px solid var(--primary);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 30px rgba(102, 126, 234, 0.15);
+}
+
+.synthesis-header h3 {
+    font-size: 1.2rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.synthesis-content {
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+/* Markdown rendered blocks */
+.md-block p { margin: 0 0 0.6em 0; line-height: 1.75; }
+.md-block p:last-child { margin-bottom: 0; }
+.md-block ul, .md-block ol { margin: 0.4em 0 0.4em 1.4em; }
+.md-block li { margin-bottom: 0.3em; }
+.md-block strong { color: var(--text-primary); font-weight: 700; }
+.md-block em { font-style: italic; color: var(--text-secondary); }
+.md-block code { font-family: monospace; font-size: 0.88em; background: var(--bg-tertiary); padding: 0.1em 0.4em; border-radius: 4px; }
+.md-block h1, .md-block h2, .md-block h3 { color: var(--text-primary); margin: 0.8em 0 0.4em; font-weight: 700; }
+
+.synthesis-content .md-block p { color: var(--text-secondary); }
+.synthesis-content .md-block strong { color: var(--primary); }
+
+/* Decision extras */
+.confidence-line { margin-bottom: 0.75rem; }
+.confidence-value { font-size: 1.1rem; color: var(--primary); font-weight: 700; }
+.contingency-list { margin: 0.5rem 0 0 1.4rem; }
+.contingency-list li { margin-bottom: 0.35em; color: var(--text-secondary); }
+
+/* Info item full-width variant */
+.info-item.full-width { grid-column: 1 / -1; }
+
+/* Render list */
+.render-list { margin: 0.25em 0 0 1.2em; }
+.render-list li { margin-bottom: 0.25em; color: var(--text-secondary); font-size: 0.95rem; }
+
+/* Agent status colours */
+.status-complete { color: var(--success) !important; }
+.status-pending  { color: var(--text-muted) !important; }
+
 /* Footer */
 .footer {
     text-align: center;

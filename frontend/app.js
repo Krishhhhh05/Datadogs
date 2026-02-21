@@ -162,6 +162,9 @@ function displayResults(results) {
         metaEl.classList.add('hidden');
     }
 
+    // Display master synthesis
+    displayMasterSynthesis(results.master_synthesis);
+
     // Display decision
     displayDecision(results.final_decision);
 
@@ -169,47 +172,51 @@ function displayResults(results) {
     displayValidation(results.phase1_validation);
     displayFinancial(results.phase2_financial);
     displayGTM(results.phase3_gtm);
-    displayAgents(results.final_decision);
+    displayAgents(results);
+}
+
+function displayMasterSynthesis(synthesis) {
+    const card = document.getElementById('synthesisCard');
+    const content = document.getElementById('synthesisContent');
+    if (!synthesis) { card.classList.add('hidden'); return; }
+
+    const text = synthesis.message || synthesis.summary || (typeof synthesis === 'string' ? synthesis : null);
+    if (text) {
+        content.innerHTML = marked.parse(text);
+        card.classList.remove('hidden');
+    } else {
+        card.classList.add('hidden');
+    }
 }
 
 function displayDecision(decision) {
     const badge = document.getElementById('decisionBadge');
     const content = document.getElementById('decisionContent');
 
-    // Set recommendation badge
-    const recommendation = decision.recommendation?.toLowerCase() || 'maybe';
-    badge.textContent = decision.recommendation || 'PENDING';
-    badge.className = 'badge ' + (recommendation.includes('go') && !recommendation.includes('no') ? 'go' :
-                                  recommendation.includes('no-go') ? 'no-go' : 'maybe');
+    // decision field is 'decision' (GO / NO-GO / WAIT)
+    const verdict = (decision.decision || '').toUpperCase();
+    badge.textContent = verdict || 'PENDING';
+    badge.className = 'badge ' + (verdict === 'GO' ? 'go' : verdict === 'NO-GO' ? 'no-go' : 'maybe');
 
-    // Set content
     let html = '';
 
-    if (decision.summary) {
-        html += `<p><strong>Summary:</strong> ${decision.summary}</p>`;
+    if (decision.confidence_score !== undefined) {
+        html += `<p class="confidence-line"><strong>Confidence Score:</strong> <span class="confidence-value">${decision.confidence_score}/100</span></p>`;
     }
 
-    if (decision.confidence_score) {
-        html += `<p><strong>Confidence Score:</strong> ${decision.confidence_score}/100</p>`;
+    if (decision.reasoning_summary) {
+        html += `<div class="md-block">${marked.parse(decision.reasoning_summary)}</div>`;
     }
 
-    if (decision.key_insights && Array.isArray(decision.key_insights)) {
-        html += `<p><strong>Key Insights:</strong></p><ul>`;
-        decision.key_insights.forEach(insight => {
-            html += `<li>${insight}</li>`;
+    if (decision.critical_contingencies && Array.isArray(decision.critical_contingencies)) {
+        html += `<p><strong>Critical Contingencies:</strong></p><ul class="contingency-list">`;
+        decision.critical_contingencies.forEach(c => {
+            html += `<li>${marked.parseInline(c)}</li>`;
         });
         html += `</ul>`;
     }
 
-    if (decision.risks && Array.isArray(decision.risks)) {
-        html += `<p><strong>Risks:</strong></p><ul>`;
-        decision.risks.forEach(risk => {
-            html += `<li>${risk}</li>`;
-        });
-        html += `</ul>`;
-    }
-
-    content.innerHTML = html || JSON.stringify(decision, null, 2);
+    content.innerHTML = html || `<pre>${JSON.stringify(decision, null, 2)}</pre>`;
 }
 
 function displayValidation(validation) {
@@ -297,60 +304,85 @@ function displayGTM(gtm) {
     tab.innerHTML = html;
 }
 
-function displayAgents(decision) {
+function displayAgents(results) {
     const tab = document.getElementById('agentsTab');
     let html = '<h4 style="margin-bottom: 1.5rem;">🤖 AI Agent Performance</h4>';
 
-    if (decision.agent_credibility && Array.isArray(decision.agent_credibility)) {
-        decision.agent_credibility.forEach(agent => {
-            html += `
-                <div class="agent-card">
-                    <div class="agent-header">
-                        <span class="agent-name">${agent.name || 'Unknown Agent'}</span>
-                        <span class="credibility">Credibility: ${((agent.credibility_score || 1) * 100).toFixed(1)}%</span>
-                    </div>
-                    <div class="agent-role">${agent.role || 'AI Agent'}</div>
+    // agents are embedded per-phase as keys; collect what we can
+    const agentMap = [
+        { name: 'Market Analyst',      phase: 'phase1_validation', key: 'market' },
+        { name: 'Customer Analyst',    phase: 'phase1_validation', key: 'customer' },
+        { name: 'Competitive Analyst', phase: 'phase1_validation', key: 'competitors' },
+        { name: 'Revenue Modeler',     phase: 'phase2_financial',  key: 'revenue' },
+        { name: 'Pricing Strategist',  phase: 'phase2_financial',  key: 'pricing' },
+        { name: 'Risk Assessor',       phase: 'phase2_financial',  key: 'risk' },
+        { name: 'GTM Strategist',      phase: 'phase3_gtm',        key: 'strategy' },
+        { name: 'Feature Planner',     phase: 'phase3_gtm',        key: 'features' },
+        { name: 'Launch Director',     phase: 'final_decision',    key: null },
+        { name: 'Master Orchestrator', phase: 'master_synthesis',  key: null },
+    ];
+
+    agentMap.forEach(a => {
+        const data = a.key ? results[a.phase]?.[a.key] : results[a.phase];
+        const status = data ? '✅ Complete' : '⏳ No data';
+        const statusClass = data ? 'status-complete' : 'status-pending';
+        html += `
+            <div class="agent-card">
+                <div class="agent-header">
+                    <span class="agent-name">${a.name}</span>
+                    <span class="credibility ${statusClass}">${status}</span>
                 </div>
-            `;
-        });
-    } else {
-        html += '<p>No agent data available.</p>';
-    }
+                <div class="agent-role">${a.phase.replace(/_/g, ' ')} → ${a.key || 'output'}</div>
+            </div>
+        `;
+    });
 
     tab.innerHTML = html;
 }
 
+function renderValue(val) {
+    if (typeof val === 'string') {
+        // Use markdown if it looks like it has markdown or is long
+        if (val.includes('\n') || val.includes('**') || val.includes('- ') || val.includes('# ') || val.length > 100) {
+            return `<div class="md-block">${marked.parse(val)}</div>`;
+        }
+        return `<span>${val}</span>`;
+    }
+    if (Array.isArray(val)) {
+        return `<ul class="render-list">${val.map(item =>
+            `<li>${typeof item === 'object' ? renderObject(item) : marked.parseInline(String(item))}</li>`
+        ).join('')}</ul>`;
+    }
+    if (typeof val === 'object' && val !== null) {
+        return renderObject(val);
+    }
+    return `<span>${val}</span>`;
+}
+
 function renderObject(obj) {
     if (typeof obj === 'string') {
-        return `<p>${obj}</p>`;
+        return renderValue(obj);
     }
 
     if (Array.isArray(obj)) {
-        return `<ul>${obj.map(item => `<li>${typeof item === 'object' ? JSON.stringify(item) : item}</li>`).join('')}</ul>`;
+        return renderValue(obj);
     }
 
     if (typeof obj === 'object' && obj !== null) {
         let html = '<div class="info-grid">';
         for (const [key, value] of Object.entries(obj)) {
             const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-            if (typeof value === 'object' && value !== null) {
-                html += `<div class="info-item" style="grid-column: 1 / -1;">
-                    <strong>${label}</strong>
-                    ${renderObject(value)}
-                </div>`;
-            } else {
-                html += `<div class="info-item">
-                    <strong>${label}</strong>
-                    <span>${value}</span>
-                </div>`;
-            }
+            const isComplex = typeof value === 'object' && value !== null;
+            html += `<div class="info-item${isComplex ? ' full-width' : ''}">
+                <strong>${label}</strong>
+                ${renderValue(value)}
+            </div>`;
         }
         html += '</div>';
         return html;
     }
 
-    return `<p>${obj}</p>`;
+    return `<span>${obj}</span>`;
 }
 
 // Tab switching
