@@ -11,10 +11,10 @@
   <br/>
   <sub>Click to watch on YouTube</sub>
 </div>
-![Venture Forge](https://img.shields.io/badge/Venture_Forge-v2.0-6366f1?style=for-the-badge)
+<!-- ![Venture Forge](https://img.shields.io/badge/Venture_Forge-v2.0-6366f1?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.12+-10b981?style=for-the-badge)
 ![Groq](https://img.shields.io/badge/Groq-Llama_3.3_70B-f59e0b?style=for-the-badge)
-![Agents](https://img.shields.io/badge/AI_Agents-9-8b5cf6?style=for-the-badge)
+![Agents](https://img.shields.io/badge/AI_Agents-9-8b5cf6?style=for-the-badge) -->
 
 </div>
 
