@@ -2,11 +2,15 @@
 
 <div align="center">
 
-## Demo Video
-https://youtu.be/h_tq5_6gjik
-[![Watch the demo]](https://youtu.be/h_tq5_6gjik)
-**AI-powered multi-agent system that analyzes product ideas and delivers data-driven GO / NO-GO launch decisions**
+## 🎥 Demo Video
 
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=h_tq5_6gjik" target="_blank">
+    <img src="https://img.youtube.com/vi/h_tq5_6gjik/0.jpg" alt="Demo Video" width="900" />
+  </a>
+  <br/>
+  <sub>Click to watch on YouTube</sub>
+</div>
 ![Venture Forge](https://img.shields.io/badge/Venture_Forge-v2.0-6366f1?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.12+-10b981?style=for-the-badge)
 ![Groq](https://img.shields.io/badge/Groq-Llama_3.3_70B-f59e0b?style=for-the-badge)
