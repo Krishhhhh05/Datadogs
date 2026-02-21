@@ -102,35 +102,48 @@ class CompetitiveAgent(BaseAgent):
         except Exception:
             competitors = []
 
-        # 2. Fetch Trends Data & YFinance Data
+        # 2. Fetch Trends Data & Rich YFinance Data
         trends_data = None
-        finance_data = {}
+        finance_prompt_data = {}   # formatted strings for LLM prompt
+        competitor_financials = []  # raw numeric data for frontend charts directly
+
         if competitors:
             trends_data = self.trends_service.get_interest_over_time(competitors)
-            
-            # Extract tickers for the competitors
+
+            # Map company names to tickers
             ticker_prompt = (
                 f"Identify the primary US stock market ticker symbols for the following companies: {competitors}. "
                 "If a company is private or doesn't have a major public ticker, return null for it. "
-                "Return a JSON dictionary mapping the exact company name given directly to either its string ticker symbol (e.g. 'AAPL') or null."
+                "Return a JSON dictionary mapping the exact company name to either its string ticker symbol (e.g. 'AAPL') or null."
             )
             try:
-                ticker_response = self.call_groq(ticker_prompt, "You are a specialized stock ticker lookup bot.")
-                for company, ticker in ticker_response.items():
+                ticker_map = self.call_groq(ticker_prompt, "You are a specialized stock ticker lookup bot.")
+                for company, ticker in ticker_map.items():
                     if ticker and isinstance(ticker, str):
-                        stats = self.finance_service.get_financial_summary(ticker)
-                        if stats:
-                            finance_data[company] = stats
-            except Exception:
-                pass
+                        # Rich profile (raw numbers) for frontend charts
+                        rich = self.finance_service.get_rich_profile(ticker)
+                        if rich:
+                            competitor_financials.append(rich)
+                            finance_prompt_data[company] = {
+                                "marketCap": rich["marketCap_fmt"],
+                                "totalRevenue": rich["totalRevenue_fmt"],
+                                "revenueGrowth": rich["revenueGrowth_fmt"],
+                                "profitMargins": rich["profitMargins_fmt"],
+                            }
+                        # 1-year price history (market proxy)
+                        history = self.finance_service.get_price_history(ticker, period="1y")
+                        if history and competitor_financials:
+                            competitor_financials[-1]["priceHistory"] = history
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning(f"YFinance ticker lookup failed: {e}")
 
-        # 3. Final Analysis
+        # 3. Build LLM context
         external_context = ""
         if trends_data:
-            external_context += f"\n\nGoogle Trends Search Interest (past 12 months) for competitors:\n{json.dumps(trends_data)[:1000]}... (data truncated)"
-            
-        if finance_data:
-            external_context += f"\n\nYahoo Finance Public Metrics for competitors:\n{json.dumps(finance_data, indent=2)}"
+            external_context += f"\n\nGoogle Trends Search Interest (past 12 months) for competitors:\n{json.dumps(trends_data)[:1000]}... (truncated)"
+        if finance_prompt_data:
+            external_context += f"\n\nYahoo Finance Public Metrics for competitors:\n{json.dumps(finance_prompt_data, indent=2)}"
 
         system_prompt = (
             f"You are the {self.name}, {self.role}\n"
@@ -140,4 +153,10 @@ class CompetitiveAgent(BaseAgent):
             "CRITICAL: Output an array under the key `competitor_scores` containing objects with `name` (competitor name), `price_score`, `features_score`, `usability_score`, `brand_score`, and `innovation_score` (all 1-10). Include an object for the proposed product (`name`: 'Proposed Product'). This will be used for a radar chart."
         )
         user_prompt = f"Product Context: {product_context}{external_context}"
-        return self.call_groq(system_prompt, user_prompt)
+        result = self.call_groq(system_prompt, user_prompt)
+
+        # 4. Merge raw yfinance data directly into result (bypasses LLM — real data)
+        if competitor_financials:
+            result["competitor_financials"] = competitor_financials
+
+        return result

@@ -399,6 +399,137 @@ function displayValidation(validation) {
         html += `</div></div>`;
     }
 
+    // ── YFinance Competitor Financials Section ────────────────────────
+    const compFin = validation?.competitors?.competitor_financials;
+    if (compFin && compFin.length > 0) {
+        // Stats card
+        html += `<div class="info-card"><h4>📈 Competitor Financials <span class="badge-live">Live via Yahoo Finance</span></h4>
+            <div class="comp-fin-grid">`;
+        compFin.forEach(c => {
+            html += `<div class="comp-fin-card">
+                <div class="comp-fin-name">${c.symbol} — ${c.name}</div>
+                <div class="comp-fin-meta">${c.industry || ''} · ${c.sector || ''} · ${c.country || ''}</div>
+                <div class="comp-fin-stats">
+                    <div><span class="fin-label">Market Cap</span><span class="fin-val">${c.marketCap_fmt || 'N/A'}</span></div>
+                    <div><span class="fin-label">Revenue</span><span class="fin-val">${c.totalRevenue_fmt || 'N/A'}</span></div>
+                    <div><span class="fin-label">Rev Growth</span><span class="fin-val">${c.revenueGrowth_fmt || 'N/A'}</span></div>
+                    <div><span class="fin-label">Profit Margin</span><span class="fin-val">${c.profitMargins_fmt || 'N/A'}</span></div>
+                    <div><span class="fin-label">Trailing P/E</span><span class="fin-val">${c.trailingPE ? c.trailingPE.toFixed(1) : 'N/A'}</span></div>
+                    <div><span class="fin-label">Employees</span><span class="fin-val">${c.employeeCount ? c.employeeCount.toLocaleString() : 'N/A'}</span></div>
+                    <div><span class="fin-label">52W Range</span><span class="fin-val">${c.fiftyTwoWeekLow && c.fiftyTwoWeekHigh ? '$' + c.fiftyTwoWeekLow + ' – $' + c.fiftyTwoWeekHigh : 'N/A'}</span></div>
+                    <div><span class="fin-label">Beta</span><span class="fin-val">${c.beta ? c.beta.toFixed(2) : 'N/A'}</span></div>
+                </div>
+            </div>`;
+        });
+        html += `</div></div>`;
+
+        // Render charts after HTML is inserted
+        setTimeout(() => {
+            const chartContainer = document.getElementById('validationCharts');
+
+            // Chart 1: Market Cap Comparison (horizontal bar)
+            const mcData = compFin.filter(c => c.marketCap);
+            if (mcData.length > 0) {
+                const ctx1 = document.createElement('canvas');
+                const w1 = document.createElement('div');
+                w1.className = 'chart-wrapper'; w1.innerHTML = '<h5>Market Cap Comparison</h5>';
+                w1.appendChild(ctx1); chartContainer.appendChild(w1);
+                const mcChart = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: mcData.map(c => c.symbol),
+                        datasets: [{
+                            label: 'Market Cap ($B)', data: mcData.map(c => +(c.marketCap / 1e9).toFixed(2)),
+                            backgroundColor: ['rgba(102,126,234,0.8)', 'rgba(118,75,162,0.8)', 'rgba(16,185,129,0.8)', 'rgba(245,158,11,0.8)'],
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', callback: v => '$' + v + 'B' } },
+                            y: { grid: { display: false }, ticks: { color: '#cbd5e1' } }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+                activeCharts.push(mcChart);
+            }
+
+            // Chart 2: Revenue vs Gross Margin (grouped bars)
+            const rvData = compFin.filter(c => c.totalRevenue);
+            if (rvData.length > 0) {
+                const ctx2 = document.createElement('canvas');
+                const w2 = document.createElement('div');
+                w2.className = 'chart-wrapper'; w2.innerHTML = '<h5>Revenue & Profit Margin</h5>';
+                w2.appendChild(ctx2); chartContainer.appendChild(w2);
+                const rvChart = new Chart(ctx2, {
+                    data: {
+                        labels: rvData.map(c => c.symbol),
+                        datasets: [
+                            {
+                                type: 'bar', label: 'Revenue ($B)', data: rvData.map(c => +(c.totalRevenue / 1e9).toFixed(2)),
+                                backgroundColor: 'rgba(102,126,234,0.7)', borderRadius: 4, yAxisID: 'y'
+                            },
+                            {
+                                type: 'line', label: 'Profit Margin (%)', data: rvData.map(c => c.profitMargins ? +(c.profitMargins * 100).toFixed(1) : null),
+                                borderColor: '#10b981', backgroundColor: 'transparent', tension: 0.3, borderWidth: 2, pointRadius: 5, yAxisID: 'y2'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            y: { position: 'left', grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', callback: v => '$' + v + 'B' } },
+                            y2: { position: 'right', grid: { display: false }, ticks: { color: '#10b981', callback: v => v + '%' } },
+                            x: { grid: { display: false }, ticks: { color: '#cbd5e1' } }
+                        },
+                        plugins: { legend: { position: 'top', labels: { color: '#cbd5e1' } } }
+                    }
+                });
+                activeCharts.push(rvChart);
+            }
+
+            // Chart 3: 1-Year Stock Price History (multi-line market proxy)
+            const histData = compFin.filter(c => c.priceHistory && c.priceHistory.length > 0);
+            if (histData.length > 0) {
+                const ctx3 = document.createElement('canvas');
+                const w3 = document.createElement('div');
+                w3.className = 'chart-wrapper'; w3.innerHTML = '<h5>1-Year Stock Price (Market Proxy)</h5>';
+                w3.appendChild(ctx3); chartContainer.appendChild(w3);
+                // Use dates from the longest dataset as labels
+                const longest = histData.reduce((a, b) => a.priceHistory.length > b.priceHistory.length ? a : b);
+                const dateLabels = longest.priceHistory.map(p => p.date);
+                const colors = ['#667eea', '#10b981', '#f59e0b', '#ef4444'];
+                const datasets = histData.map((c, i) => {
+                    const dateMap = Object.fromEntries(c.priceHistory.map(p => [p.date, p.close]));
+                    return {
+                        label: c.symbol, data: dateLabels.map(d => dateMap[d] || null),
+                        borderColor: colors[i % colors.length], backgroundColor: 'transparent',
+                        tension: 0.3, borderWidth: 2, pointRadius: 0
+                    };
+                });
+                const priceChart = new Chart(ctx3, {
+                    type: 'line', data: { labels: dateLabels, datasets },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                grid: { display: false }, ticks: {
+                                    color: '#94a3b8', maxTicksLimit: 6,
+                                    callback: (_, i) => dateLabels[i] ? dateLabels[i].slice(0, 7) : ''
+                                }
+                            },
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', callback: v => '$' + v } }
+                        },
+                        plugins: { legend: { position: 'top', labels: { color: '#cbd5e1' } } }
+                    }
+                });
+                activeCharts.push(priceChart);
+            }
+        }, 50);
+    }
+
     // Clear old charts container and reset HTML
     const container = document.getElementById('validationCharts');
     if (container) container.innerHTML = '';
