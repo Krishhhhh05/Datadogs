@@ -12,14 +12,14 @@ class BaseAgent:
     Handles interaction with the Groq API and tracks agent credibility.
     """
 
-    def __init__(self, name: str, role: str, model: str = "llama3-70b-8192"):
+    def __init__(self, name: str, role: str, model: str = "llama-3.3-70b-versatile"):
         """
         Initializes the agent with a name, role, and Groq client.
         
         Args:
             name: Human-readable name of the agent.
             role: The specific domain expertise of the agent.
-            model: The Groq model to use (default: llama3-70b-8192).
+            model: The Groq model to use (default: llama-3.3-70b-versatile).
         """
         self.name = name
         self.role = role
