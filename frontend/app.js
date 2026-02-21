@@ -344,7 +344,10 @@ function displayValidation(validation) {
             }, 50);
         }
 
+        let hasSpecificContent = false;
+
         if (mta.market_conditions?.length) {
+            hasSpecificContent = true;
             html += `<div class="sub-section"><h5>Market Conditions</h5><div class="trend-grid">`;
             mta.market_conditions.forEach(mc => {
                 html += `<div class="trend-card">
@@ -357,6 +360,7 @@ function displayValidation(validation) {
         }
 
         if (mta.predictive_analytics) {
+            hasSpecificContent = true;
             const pa = mta.predictive_analytics;
             html += `<div class="sub-section"><h5>Predictive Analytics</h5>
                 <div class="metrics-row">
@@ -365,42 +369,54 @@ function displayValidation(validation) {
                     ${pa.confidence_level !== undefined ? `<div class="metric-pill">Confidence: ${pa.confidence_level}%</div>` : ''}
                 </div></div>`;
         }
+
+        // Fallback: render all data if no specific keys matched
+        if (!hasSpecificContent) {
+            html += renderObject(market);
+        }
         html += `</div>`;
     }
 
     // ── Customer Personas ─────────────────────────────────────────────
     const customer = validation?.customer;
     if (customer) {
-        const personas = customer.customers || [];
-        html += `<div class="info-card"><h4>👥 Customer Personas</h4><div class="persona-grid">`;
-        personas.forEach(c => {
-            html += `<div class="persona-card">
-                <div class="persona-header">
-                    <span class="persona-name">${c.name || 'Persona'}</span>
-                    ${c.persona_type ? `<span class="persona-type-badge">${c.persona_type}</span>` : ''}
-                </div>
-                ${c.demographics ? `<div class="demo-row">
-                    ${c.demographics.age ? `<span>🎂 ${c.demographics.age}</span>` : ''}
-                    ${c.demographics.income ? `<span>💼 ${c.demographics.income}</span>` : ''}
-                    ${c.demographics.occupation ? `<span>🏢 ${c.demographics.occupation}</span>` : ''}
-                </div>` : ''}
-                ${c.pain_points?.length ? `<div class="tag-section">
-                    <div class="tag-label">Pain Points</div>
-                    ${c.pain_points.map(p => `<span class="tag tag-red">${p}</span>`).join('')}
-                </div>` : ''}
-                ${c.goals?.length ? `<div class="tag-section">
-                    <div class="tag-label">Goals</div>
-                    ${c.goals.map(g => `<span class="tag tag-green">${g}</span>`).join('')}
-                </div>` : ''}
-            </div>`;
-        });
-        html += `</div></div>`;
+        const personas = customer.customers || customer.personas || customer.target_personas || [];
+        html += `<div class="info-card"><h4>👥 Customer Personas</h4>`;
+        if (personas.length) {
+            html += `<div class="persona-grid">`;
+            personas.forEach(c => {
+                html += `<div class="persona-card">
+                    <div class="persona-header">
+                        <span class="persona-name">${c.name || c.persona_name || 'Persona'}</span>
+                        ${c.persona_type ? `<span class="persona-type-badge">${c.persona_type}</span>` : ''}
+                    </div>
+                    ${c.demographics ? `<div class="demo-row">
+                        ${c.demographics.age ? `<span>🎂 ${c.demographics.age}</span>` : ''}
+                        ${c.demographics.income ? `<span>💼 ${c.demographics.income}</span>` : ''}
+                        ${c.demographics.occupation ? `<span>🏢 ${c.demographics.occupation}</span>` : ''}
+                    </div>` : ''}
+                    ${c.pain_points?.length ? `<div class="tag-section">
+                        <div class="tag-label">Pain Points</div>
+                        ${c.pain_points.map(p => `<span class="tag tag-red">${p}</span>`).join('')}
+                    </div>` : ''}
+                    ${c.goals?.length ? `<div class="tag-section">
+                        <div class="tag-label">Goals</div>
+                        ${c.goals.map(g => `<span class="tag tag-green">${g}</span>`).join('')}
+                    </div>` : ''}
+                </div>`;
+            });
+            html += `</div>`;
+        } else {
+            // Fallback: render all data if no persona array found
+            html += renderObject(customer);
+        }
+        html += `</div>`;
     }
 
     // ── Competitive Analysis ─────────────────────────────────────────
     const competitors = validation?.competitors;
     if (competitors) {
-        const comps = competitors.competitors || competitors.competitor_scores || [];
+        const comps = competitors.competitors || competitors.competitor_scores || competitors.competitive_analysis || [];
 
         // Render Competitor Radar Chart if available
         if (competitors.competitor_scores && Array.isArray(competitors.competitor_scores)) {
@@ -450,25 +466,34 @@ function displayValidation(validation) {
             }, 50);
         }
 
-        html += `<div class="info-card"><h4>🎯 Competitive Analysis</h4><div class="comp-grid">`;
-        comps.forEach(c => {
-            if (!c.name || c.name === 'Proposed Product') return; // Skip if just score data for the product itself
-            html += `<div class="comp-card">
-                <div class="comp-name">${c.name || 'Competitor'}</div>
-                ${c.description ? `<p class="comp-desc">${c.description}</p>` : ''}
-                <div class="sw-row">
-                    ${c.strengths?.length ? `<div class="sw-col">
-                        <div class="sw-label sw-label-green">✅ Strengths</div>
-                        <ul>${c.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
-                    </div>` : ''}
-                    ${c.weaknesses?.length ? `<div class="sw-col">
-                        <div class="sw-label sw-label-red">❌ Weaknesses</div>
-                        <ul>${c.weaknesses.map(w => `<li>${w}</li>`).join('')}</ul>
-                    </div>` : ''}
-                </div>
-            </div>`;
-        });
-        html += `</div></div>`;
+        html += `<div class="info-card"><h4>🎯 Competitive Analysis</h4>`;
+        if (comps.length) {
+            html += `<div class="comp-grid">`;
+            comps.forEach(c => {
+                if (!c.name || c.name === 'Proposed Product') return;
+                html += `<div class="comp-card">
+                    <div class="comp-name">${c.name || 'Competitor'}</div>
+                    ${c.description ? `<p class="comp-desc">${c.description}</p>` : ''}
+                    <div class="sw-row">
+                        ${c.strengths?.length ? `<div class="sw-col">
+                            <div class="sw-label sw-label-green">✅ Strengths</div>
+                            <ul>${c.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+                        </div>` : ''}
+                        ${c.weaknesses?.length ? `<div class="sw-col">
+                            <div class="sw-label sw-label-red">❌ Weaknesses</div>
+                            <ul>${c.weaknesses.map(w => `<li>${w}</li>`).join('')}</ul>
+                        </div>` : ''}
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+        } else {
+            // Fallback: render all competitor data if no structured array found
+            const fallbackData = { ...competitors };
+            delete fallbackData.competitor_financials; // Rendered separately below
+            html += renderObject(fallbackData);
+        }
+        html += `</div>`;
     }
 
     // ── YFinance Competitor Financials Section ────────────────────────
