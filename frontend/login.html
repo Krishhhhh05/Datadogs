@@ -181,6 +181,44 @@
             font-size: 0.72rem;
             color: #475569;
         }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-link a {
+            color: #818cf8;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        .login-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: none;
+            text-align: center;
+        }
+
+        .login-success.visible {
+            display: block;
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -190,23 +228,47 @@
             <div class="login-header">
                 <div class="login-logo">🐾</div>
                 <div class="login-title">DataDogs</div>
-                <div class="login-subtitle">Multi-Agent Product Launch OS</div>
+                <div class="login-subtitle" id="formSubtitle">Multi-Agent Product Launch OS</div>
             </div>
 
             <div id="loginError" class="login-error">Invalid username or password</div>
+            <div id="successMsg" class="login-success">Account created! Please sign in.</div>
 
+            <!-- Sign In Form -->
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Enter username" autocomplete="username" required>
+                    <label for="loginUser">Username</label>
+                    <input type="text" id="loginUser" placeholder="Enter username" autocomplete="username" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter password" autocomplete="current-password"
+                    <label for="loginPass">Password</label>
+                    <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password"
                         required>
                 </div>
                 <button type="submit" class="login-btn">Sign In →</button>
             </form>
+
+            <!-- Sign Up Form -->
+            <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="regName">Full Name</label>
+                    <input type="text" id="regName" placeholder="e.g. Jane Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="regUser">Username</label>
+                    <input type="text" id="regUser" placeholder="Choose a username" autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPass">Password</label>
+                    <input type="password" id="regPass" placeholder="Choose a password" autocomplete="new-password"
+                        required>
+                </div>
+                <button type="submit" class="login-btn">Create Account →</button>
+            </form>
+
+            <div class="toggle-link" id="toggleLink">
+                Don't have an account? <a onclick="showRegister()">Create one</a>
+            </div>
 
             <div class="login-footer">
                 Powered by Groq AI &mdash; Secured Access
@@ -217,17 +279,33 @@
     <script>
         const API_URL = 'http://localhost:5001';
 
-        // If already logged in, redirect
         if (sessionStorage.getItem('datadogs_user')) {
             window.location.href = 'app.html';
         }
 
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.getElementById('toggleLink').innerHTML = 'Already have an account? <a onclick="showLogin()">Sign in</a>';
+            document.getElementById('formSubtitle').textContent = 'Create your account';
+            document.getElementById('loginError').classList.remove('visible');
+            document.getElementById('successMsg').classList.remove('visible');
+        }
+
+        function showLogin() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('toggleLink').innerHTML = 'Don\'t have an account? <a onclick="showRegister()">Create one</a>';
+            document.getElementById('formSubtitle').textContent = 'Multi-Agent Product Launch OS';
+            document.getElementById('loginError').classList.remove('visible');
+        }
+
         async function handleLogin(e) {
             e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
+            const username = document.getElementById('loginUser').value.trim();
+            const password = document.getElementById('loginPass').value;
             const errorEl = document.getElementById('loginError');
-
+            document.getElementById('successMsg').classList.remove('visible');
             errorEl.classList.remove('visible');
 
             try {
@@ -237,12 +315,47 @@
                     body: JSON.stringify({ username, password }),
                 });
                 const data = await res.json();
-
                 if (res.ok && data.success) {
                     sessionStorage.setItem('datadogs_user', JSON.stringify(data.user));
                     window.location.href = 'app.html';
                 } else {
                     errorEl.textContent = data.error || 'Invalid username or password';
+                    errorEl.classList.add('visible');
+                }
+            } catch (err) {
+                errorEl.textContent = 'Cannot connect to server. Is the backend running?';
+                errorEl.classList.add('visible');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const username = document.getElementById('regUser').value.trim();
+            const password = document.getElementById('regPass').value;
+            const errorEl = document.getElementById('loginError');
+            errorEl.classList.remove('visible');
+
+            if (password.length < 4) {
+                errorEl.textContent = 'Password must be at least 4 characters';
+                errorEl.classList.add('visible');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, username, password }),
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showLogin();
+                    document.getElementById('successMsg').classList.add('visible');
+                    document.getElementById('loginUser').value = username;
+                    document.getElementById('loginPass').focus();
+                } else {
+                    errorEl.textContent = data.error || 'Registration failed';
                     errorEl.classList.add('visible');
                 }
             } catch (err) {

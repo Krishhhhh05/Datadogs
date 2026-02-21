@@ -36,6 +36,42 @@ def login():
 
     return jsonify({"success": False, "error": "Invalid username or password"}), 401
 
+@app.route('/auth/register', methods=['POST'])
+def register():
+    """Register a new user and save to data/users.json."""
+    data = request.json or {}
+    name = data.get('name', '').strip()
+    username = data.get('username', '').strip()
+    password = data.get('password', '')
+
+    if not name or not username or not password:
+        return jsonify({"success": False, "error": "All fields are required"}), 400
+    if len(password) < 4:
+        return jsonify({"success": False, "error": "Password must be at least 4 characters"}), 400
+
+    # Load existing users
+    users = []
+    if os.path.exists(USERS_PATH):
+        try:
+            with open(USERS_PATH, "r") as f:
+                users = json.load(f)
+        except Exception:
+            pass
+
+    # Check duplicate
+    if any(u["username"] == username for u in users):
+        return jsonify({"success": False, "error": "Username already taken"}), 409
+
+    # Add new user
+    users.append({"username": username, "password": password, "name": name, "role": "analyst"})
+
+    # Ensure data dir exists
+    os.makedirs(os.path.dirname(USERS_PATH), exist_ok=True)
+    with open(USERS_PATH, "w") as f:
+        json.dump(users, f, indent=2)
+
+    return jsonify({"success": True})
+
 @app.route('/simulate', methods=['POST'])
 def simulate():
     data = request.json
