@@ -12,7 +12,8 @@ class GTMAgent(BaseAgent):
         system_prompt = (
             f"You are the {self.name}, {self.role}\n"
             "Create a Go-To-Market strategy based on all validation and financial data.\n"
-            "Provide: Top 3 marketing channels, launch campaign timeline, and projected Customer Acquisition Cost (CAC)."
+            "Provide brief bullet points for: Top 3 marketing channels, launch campaign timeline, and projected Customer Acquisition Cost (CAC).\n"
+            "CRITICAL: Output an array under the key `funnel_metrics` containing objects for each stage of the user journey (`name`: Awareness, Consideration, Conversion, Retention) and `value` (estimated percentage of users remaining, e.g. 100, 50, 10, 5). This will be graphed as a Funnel chart."
         )
         user_prompt = f"Product Context: {product_context}\nAccumulated Context (Phases 1-2): {accumulated_data}"
         return self.call_groq(system_prompt, user_prompt)

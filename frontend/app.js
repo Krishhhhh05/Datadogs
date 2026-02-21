@@ -630,7 +630,66 @@ function displayGTM(gtm) {
                 </div></div>`;
         }
 
-        if (gs.funnel_stages?.length) {
+        if (gs.funnel_metrics && Array.isArray(gs.funnel_metrics)) {
+            setTimeout(() => {
+                const ctx = document.createElement('canvas');
+                const container = document.getElementById('gtmCharts');
+                const wrapper = document.createElement('div');
+                wrapper.className = 'chart-wrapper';
+                wrapper.innerHTML = '<h5>Funnel Metrics</h5>';
+                wrapper.appendChild(ctx);
+                container.appendChild(wrapper);
+
+                const labels = gs.funnel_metrics.map(f => f.name);
+                const data = gs.funnel_metrics.map(f => f.value);
+
+                // Funnel colors graduating from blue to gray/dark
+                const backgroundColors = [
+                    'rgba(102, 126, 234, 0.8)', // Awareness (Top of funnel)
+                    'rgba(118, 75, 162, 0.8)',  // Consideration
+                    'rgba(16, 185, 129, 0.8)',  // Conversion
+                    'rgba(245, 158, 11, 0.8)'   // Retention
+                ];
+
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Users Remaining (%)',
+                            data: data,
+                            backgroundColor: backgroundColors.slice(0, data.length),
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', // Makes it a horizontal bar chart
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 100, // Funnel starts at 100%
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: { color: '#94a3b8', callback: value => value + '%' }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { color: '#cbd5e1' }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: { label: (ctx) => `${ctx.raw}% remaining` }
+                            }
+                        }
+                    }
+                });
+                activeCharts.push(chart);
+            }, 50);
+        } else if (gs.funnel_stages?.length) {
+            // Fallback to text funnel if no metrics data
             html += `<div class="sub-section"><h5>Funnel Stages</h5>
                 <div class="funnel">
                     ${gs.funnel_stages.map((stage, i) => `<div class="funnel-stage">
@@ -662,7 +721,10 @@ function displayGTM(gtm) {
         html += `</div></div>`;
     }
 
-    tab.innerHTML = html || '<p class="no-data">No GTM data available.</p>';
+    // Clear old charts container and reset HTML
+    const container = document.getElementById('gtmCharts');
+    if (container) container.innerHTML = '';
+    document.getElementById('gtmContent').innerHTML = html || '<p class="no-data">No GTM strategy data available.</p>';
 }
 
 function displayAgents(results) {

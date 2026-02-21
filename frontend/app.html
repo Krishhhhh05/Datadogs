@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -120,11 +122,8 @@
                 <!-- Product Idea Description -->
                 <div class="form-group">
                     <label for="productIdea">Product Description</label>
-                    <textarea
-                        id="productIdea"
-                        rows="4"
-                        placeholder="Describe your product idea, target market, and key value proposition..."
-                    ></textarea>
+                    <textarea id="productIdea" rows="4"
+                        placeholder="Describe your product idea, target market, and key value proposition..."></textarea>
                 </div>
 
                 <button id="analyzeBtn" class="primary-btn">
@@ -214,7 +213,10 @@
                 <div id="financialCharts" class="chart-flex-container"></div>
                 <div id="financialContent"></div>
             </div>
-            <div id="gtmTab" class="tab-pane"></div>
+            <div id="gtmTab" class="tab-pane">
+                <div id="gtmCharts" class="chart-flex-container"></div>
+                <div id="gtmContent"></div>
+            </div>
             <div id="agentsTab" class="tab-pane"></div>
         </section>
 
@@ -225,4 +227,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>

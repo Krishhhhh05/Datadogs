@@ -2,6 +2,7 @@ from typing import Any, Dict, List
 import json
 from core.base_agent import BaseAgent
 from core.trends_service import GoogleTrendsService
+from core.finance_service import YFinanceService
 
 class MarketAgent(BaseAgent):
     def __init__(self):
@@ -87,6 +88,7 @@ class CompetitiveAgent(BaseAgent):
             role="Expert in competitor benchmarking and differentiation strategy."
         )
         self.trends_service = GoogleTrendsService()
+        self.finance_service = YFinanceService()
 
     def analyze(self, product_context: str) -> Dict[str, Any]:
         # 1. Extract Competitor Names
@@ -100,22 +102,42 @@ class CompetitiveAgent(BaseAgent):
         except Exception:
             competitors = []
 
-        # 2. Fetch Trends Data
+        # 2. Fetch Trends Data & YFinance Data
         trends_data = None
+        finance_data = {}
         if competitors:
             trends_data = self.trends_service.get_interest_over_time(competitors)
+            
+            # Extract tickers for the competitors
+            ticker_prompt = (
+                f"Identify the primary US stock market ticker symbols for the following companies: {competitors}. "
+                "If a company is private or doesn't have a major public ticker, return null for it. "
+                "Return a JSON dictionary mapping the exact company name given directly to either its string ticker symbol (e.g. 'AAPL') or null."
+            )
+            try:
+                ticker_response = self.call_groq(ticker_prompt, "You are a specialized stock ticker lookup bot.")
+                for company, ticker in ticker_response.items():
+                    if ticker and isinstance(ticker, str):
+                        stats = self.finance_service.get_financial_summary(ticker)
+                        if stats:
+                            finance_data[company] = stats
+            except Exception:
+                pass
 
         # 3. Final Analysis
-        trends_context = ""
+        external_context = ""
         if trends_data:
-            trends_context = f"\n\nGoogle Trends Search Interest (past 12 months) for competitors:\n{json.dumps(trends_data)[:1000]}... (data truncated)"
+            external_context += f"\n\nGoogle Trends Search Interest (past 12 months) for competitors:\n{json.dumps(trends_data)[:1000]}... (data truncated)"
+            
+        if finance_data:
+            external_context += f"\n\nYahoo Finance Public Metrics for competitors:\n{json.dumps(finance_data, indent=2)}"
 
         system_prompt = (
             f"You are the {self.name}, {self.role}\n"
             "Assess the competitive landscape for the product idea.\n"
             "Provide the top 3 competitors, and evaluate them concisely. Keep SWOT analysis as short bullet points.\n"
-            "Use the provided Google Trends data (if available) to evaluate competitor mindshare and search interest over time.\n"
+            "Use the provided Google Trends data and Yahoo Finance Metrics (if available) to evaluate competitor scale, revenue, and search interest.\n"
             "CRITICAL: Output an array under the key `competitor_scores` containing objects with `name` (competitor name), `price_score`, `features_score`, `usability_score`, `brand_score`, and `innovation_score` (all 1-10). Include an object for the proposed product (`name`: 'Proposed Product'). This will be used for a radar chart."
         )
-        user_prompt = f"Product Context: {product_context}{trends_context}"
+        user_prompt = f"Product Context: {product_context}{external_context}"
         return self.call_groq(system_prompt, user_prompt)

@@ -13,6 +13,7 @@ dependencies = [
     "flask-cors>=4.0.0",
     "pytrends",
     "pandas",
+    "yfinance>=1.2.0",
 ]
 
 [project.optional-dependencies]
