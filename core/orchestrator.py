@@ -1,10 +1,16 @@
 import asyncio
+import json
+import os
+import random
+from datetime import datetime
 from typing import Any, Dict, List
 from core.base_agent import BaseAgent
 from agents.validation import MarketAgent, CustomerAgent, CompetitiveAgent
 from agents.financial import RevenueAgent, PricingAgent, RiskAgent
 from agents.gtm import GTMAgent, FeatureAgent
 from agents.decision import LaunchDecisionAgent
+
+LEARNING_LOG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "learning_log.json")
 
 class ProductLaunchOrchestrator:
     """
@@ -32,6 +38,74 @@ class ProductLaunchOrchestrator:
             self.revenue_agent, self.pricing_agent, self.risk_agent,
             self.gtm_agent, self.feature_agent, self.decision_agent
         ]
+
+        # Load persisted credibility scores if they exist
+        self._restore_credibility()
+
+    def _restore_credibility(self):
+        """Restore agent credibility scores from the last learning log entry."""
+        if not os.path.exists(LEARNING_LOG_PATH):
+            return
+        try:
+            with open(LEARNING_LOG_PATH, "r") as f:
+                log = json.load(f)
+            if not log:
+                return
+            last = log[-1]
+            agent_map = {a.name: a for a in self.all_agents}
+            for name, data in last.get("agents", {}).items():
+                if name in agent_map:
+                    agent_map[name].credibility_score = data.get("credibility", 1.0)
+            print(f"[Learning] Restored credibility from run #{last['run_id']}")
+        except Exception as e:
+            print(f"[Learning] Could not restore credibility: {e}")
+
+    def _calibrate_and_log(self, product_context: str, decision: str) -> Dict[str, Any]:
+        """
+        Post-simulation self-learning step:
+        1. Simulate post-launch feedback with random normalized errors.
+        2. Update each agent's credibility score via EMA.
+        3. Persist the snapshot to data/learning_log.json.
+        """
+        # Load existing log
+        os.makedirs(os.path.dirname(LEARNING_LOG_PATH), exist_ok=True)
+        log = []
+        if os.path.exists(LEARNING_LOG_PATH):
+            try:
+                with open(LEARNING_LOG_PATH, "r") as f:
+                    log = json.load(f)
+            except (json.JSONDecodeError, IOError):
+                log = []
+
+        run_id = len(log) + 1
+        agents_snapshot = {}
+
+        for agent in self.all_agents:
+            old_score = agent.credibility_score
+            # Simulate normalized error (0 = perfect, 1 = worst)
+            error = round(random.uniform(0.0, 0.3), 4)
+            agent.update_credibility(error)
+            agents_snapshot[agent.name] = {
+                "credibility": round(agent.credibility_score, 4),
+                "previous": round(old_score, 4),
+                "normalized_error": error,
+                "change": round(agent.credibility_score - old_score, 4),
+            }
+
+        snapshot = {
+            "run_id": run_id,
+            "timestamp": datetime.now().isoformat(),
+            "product_idea_summary": product_context[:120] + ("..." if len(product_context) > 120 else ""),
+            "decision": decision,
+            "agents": agents_snapshot,
+        }
+
+        log.append(snapshot)
+        with open(LEARNING_LOG_PATH, "w") as f:
+            json.dump(log, f, indent=2)
+
+        print(f"[Learning] Logged run #{run_id} — {len(self.all_agents)} agents calibrated.")
+        return snapshot
 
     async def run_simulation(self, product_context: str) -> Dict[str, Any]:
         """
@@ -80,5 +154,11 @@ class ProductLaunchOrchestrator:
         agent_metadata = [a.get_info() for a in self.all_agents]
         decision_data = self.decision_agent.analyze(product_context, results, agent_metadata)
         results["final_decision"] = decision_data
+
+        # --- Phase 5: Self-Learning Calibration ---
+        print("Starting Phase 5: Self-Learning Calibration...")
+        decision_str = (decision_data.get("decision") or "UNKNOWN") if isinstance(decision_data, dict) else "UNKNOWN"
+        snapshot = self._calibrate_and_log(product_context, decision_str)
+        results["learning_snapshot"] = snapshot
 
         return results

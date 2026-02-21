@@ -1,7 +1,9 @@
 import asyncio
+import json
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from core.orchestrator import ProductLaunchOrchestrator
+from core.orchestrator import ProductLaunchOrchestrator, LEARNING_LOG_PATH
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -28,6 +30,18 @@ def simulate():
         return jsonify({"error": str(e)}), 500
     finally:
         loop.close()
+
+@app.route('/learning', methods=['GET'])
+def learning():
+    """Return the full learning log for the frontend tracking panel."""
+    if not os.path.exists(LEARNING_LOG_PATH):
+        return jsonify([])
+    try:
+        with open(LEARNING_LOG_PATH, "r") as f:
+            log = json.load(f)
+        return jsonify(log)
+    except Exception:
+        return jsonify([])
 
 @app.route('/chat', methods=['POST'])
 def chat():

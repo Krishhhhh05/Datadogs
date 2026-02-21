@@ -239,6 +239,7 @@ function displayResults(results) {
     displayFinancial(results.phase2_financial);
     displayGTM(results.phase3_gtm);
     displayAgents(results);
+    displayLearning(results.learning_snapshot);
 }
 
 function displayMasterSynthesis(synthesis) {
@@ -953,6 +954,30 @@ function displayAgents(results) {
             ? keys.slice(0, 3).map(k => `<span class="agent-key">${k.replace(/_/g, ' ')}</span>`).join('')
             : '';
 
+        // Surface YFinance live data directly on the Competitive Intelligence agent card
+        let financeSection = '';
+        if (a.name === 'Competitive Intelligence' && done) {
+            const compFin = a.data?.competitor_financials;
+            if (compFin && compFin.length > 0) {
+                const rows = compFin.map(c => `
+                    <div class="agent2-fin-row">
+                        <span class="agent2-fin-sym">${c.symbol}</span>
+                        <span class="agent2-fin-name">${c.name}</span>
+                        <div class="agent2-fin-metrics">
+                            <span>${c.marketCap_fmt || 'N/A'}</span>
+                            ${c.revenueGrowth_fmt ? `<span class="agent2-fin-sub">Growth: ${c.revenueGrowth_fmt}</span>` : ''}
+                        </div>
+                    </div>`).join('');
+                financeSection = `
+                    <div class="agent2-finance">
+                        <div class="agent2-finance-label">Live via Yahoo Finance</div>
+                        ${rows}
+                    </div>`;
+            } else {
+                financeSection = `<div class="agent2-finance agent2-finance-empty">No public ticker data fetched</div>`;
+            }
+        }
+
         html += `<div class="agent-card2${done ? '' : ' agent-card2-pending'}">
             <div class="agent2-header">
                 <span class="agent2-icon">${a.icon}</span>
@@ -963,6 +988,7 @@ function displayAgents(results) {
                 <span class="agent2-status ${done ? 'status-complete' : 'status-pending'}">${done ? '✅' : '⏳'}</span>
             </div>
             ${preview ? `<div class="agent2-keys">${preview}</div>` : ''}
+            ${financeSection}
         </div>`;
     });
     html += '</div>';
@@ -1014,6 +1040,133 @@ function renderObject(obj) {
 
     return `<span>${obj}</span>`;
 }
+
+// ── Self-Learning Panel ─────────────────────────────────────────────
+let learningLog = []; // cached full log
+
+async function loadLearningLog() {
+    try {
+        const res = await fetch(`${API_URL}/learning`);
+        if (res.ok) learningLog = await res.json();
+    } catch { learningLog = []; }
+}
+
+function displayLearning(snapshot) {
+    // Merge new snapshot into cached log if present
+    if (snapshot && (!learningLog.length || learningLog[learningLog.length - 1].run_id !== snapshot.run_id)) {
+        learningLog.push(snapshot);
+    }
+
+    const content = document.getElementById('learningContent');
+    const chartContainer = document.getElementById('learningCharts');
+    if (!learningLog.length) {
+        content.innerHTML = '<p class="no-data">No learning data yet. Run a simulation to begin calibration.</p>';
+        chartContainer.innerHTML = '';
+        return;
+    }
+
+    // ── Run History Table ─────────────────────
+    const latest = learningLog[learningLog.length - 1];
+    let html = `<div class="info-card">
+        <h4>🧬 Agent Self-Learning <span class="badge-live">Run #${latest.run_id}</span></h4>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem">
+            Each simulation calibrates agent credibility scores via Exponential Moving Average.
+            Scores closer to 1.0 = higher reliability. The trend chart shows how each agent's confidence evolves.
+        </p>
+        <table class="learning-table">
+            <thead>
+                <tr><th>Agent</th><th>Score</th><th>Change</th><th>Error</th></tr>
+            </thead>
+            <tbody>`;
+
+    for (const [name, data] of Object.entries(latest.agents)) {
+        const changeVal = data.change || 0;
+        const arrow = changeVal > 0 ? '↑' : changeVal < 0 ? '↓' : '–';
+        const changeColor = changeVal > 0 ? '#10b981' : changeVal < 0 ? '#ef4444' : 'var(--text-muted)';
+        html += `<tr>
+            <td>${name}</td>
+            <td><strong>${data.credibility.toFixed(4)}</strong></td>
+            <td style="color:${changeColor}">${arrow} ${Math.abs(changeVal).toFixed(4)}</td>
+            <td style="color:var(--text-muted)">${data.normalized_error.toFixed(4)}</td>
+        </tr>`;
+    }
+    html += `</tbody></table></div>`;
+
+    // ── Run History List ──────────────────────
+    html += `<div class="info-card" style="margin-top:1rem">
+        <h4>📋 Simulation History</h4>
+        <div class="learning-history">`;
+    learningLog.slice().reverse().forEach(run => {
+        const d = new Date(run.timestamp);
+        const time = d.toLocaleString();
+        const decBadge = run.decision === 'GO' ? 'go' : run.decision === 'NO-GO' ? 'no-go' : 'maybe';
+        html += `<div class="learning-run-row">
+            <span class="learning-run-id">#${run.run_id}</span>
+            <span class="badge ${decBadge}" style="font-size:0.7rem">${run.decision}</span>
+            <span class="learning-run-idea">${run.product_idea_summary}</span>
+            <span class="learning-run-time">${time}</span>
+        </div>`;
+    });
+    html += `</div></div>`;
+
+    content.innerHTML = html;
+
+    // ── Credibility Trend Chart ───────────────
+    chartContainer.innerHTML = '<div class="chart-wrapper" style="height:400px;min-width:100%"><canvas id="learningTrendChart"></canvas></div>';
+
+    setTimeout(() => {
+        const ctx = document.getElementById('learningTrendChart');
+        if (!ctx) return;
+
+        // Collect all agent names from all runs
+        const agentNames = [...new Set(learningLog.flatMap(r => Object.keys(r.agents)))];
+        const runLabels = learningLog.map(r => `Run #${r.run_id}`);
+
+        const palette = [
+            '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+            '#06b6d4', '#ec4899', '#14b8a6', '#f97316'
+        ];
+
+        const datasets = agentNames.map((name, i) => ({
+            label: name,
+            data: learningLog.map(r => r.agents[name]?.credibility ?? null),
+            borderColor: palette[i % palette.length],
+            backgroundColor: palette[i % palette.length] + '22',
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: 4,
+            fill: false,
+        }));
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: runLabels, datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Agent Credibility Over Time', color: '#e2e8f0', font: { size: 14 } },
+                    legend: { labels: { color: '#94a3b8', font: { size: 10 } } },
+                },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    y: {
+                        min: 0.85, max: 1.01,
+                        ticks: { color: '#94a3b8' },
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        title: { display: true, text: 'Credibility Score', color: '#94a3b8' },
+                    },
+                },
+            },
+        });
+        activeCharts.push(chart);
+    }, 80);
+}
+
+// Load learning history on page load
+loadLearningLog().then(() => {
+    if (learningLog.length) displayLearning(null);
+});
 
 // Tab switching
 document.querySelectorAll('.tab-btn').forEach(btn => {
