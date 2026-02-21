@@ -15,7 +15,7 @@
 
 ## ✨ What is Venture Forge?
 
-Venture Forge is an intelligent product launch operating system powered by **9 specialized AI agents** that work in parallel and sequence across **4 analysis phases** to evaluate your product idea end-to-end.
+Venture Forge is an intelligent product launch operating system powered by **specialized AI agents** that work in parallel and sequence across **4 analysis phases** to evaluate your product idea end-to-end.
 
 Instead of manual market research that takes weeks, Venture Forge provides a comprehensive analysis in minutes, backed by real-time financial data and competitive intelligence.
 
@@ -63,12 +63,15 @@ graph TD
 
 ## 🎯 Key Features
 
-- 🤖 **9 Specialized AI Agents** — parallel + sequential orchestration via `asyncio`.
+- 🤖 **Specialized AI Agents** — parallel + sequential orchestration via `asyncio`.
 - 🧬 **Self-Learning Loop** — agents calibrate credibility via EMA (Exponential Moving Average) after each simulation.
 - 📈 **Live Financial Data** — real-time competitor financials via **yFinance** (market cap, revenue, stock history).
 - 🔍 **Google Trends Integration** — search interest data feeds into market analysis.
 - 🧠 **Master Agent Chat** — conversational AI assistant with full simulation context.
 - 📊 **Interactive Dashboard** — glassmorphism UI with Chart.js visualizations (market size, revenue projections, risk matrix).
+- 🎙️ **Modulate (Sponsor)** — High-fidelity Speech-to-Text (STT) via the Velma API for voice-driven product brainstorming.
+- ⚡ **Airia (Sponsor)** — Unified AI model orchestration and served inference for a robust multi-agent backbone.
+- 🧪 **Braintrust (Sponsor)** — Enterprise-grade AI evaluation and tracing to ensure agent decision accuracy and performance.
 
 ---
 
@@ -97,8 +100,8 @@ To understand how Venture Forge works, let's follow a dummy product idea through
 | Layer | Technology |
 |-------|-----------|
 | **Backend** | Python 3.12, Flask, Flask-CORS |
-| **AI/LLM** | Groq API — `llama-3.3-70b-versatile` |
-| **Data APIs** | yFinance, Google Trends |
+| **AI/LLM** | Groq API, **Airia** (Orchestration), **Braintrust** (Eval) |
+| **Data APIs** | yFinance, Google Trends, **Modulate** (STT) |
 | **Frontend** | Vanilla JS, HTML5, CSS3, Chart.js |
 
 ---
@@ -155,5 +158,7 @@ MIT License.
 <div align="center">
 
 **Made with ❤️ by Venture Forge**
+
+*Special thanks to our sponsors: **Airia**, **Braintrust**, and **Modulate***
 
 </div>
