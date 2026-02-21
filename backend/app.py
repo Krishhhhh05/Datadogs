@@ -8,7 +8,33 @@ from core.orchestrator import ProductLaunchOrchestrator, LEARNING_LOG_PATH
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+USERS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "users.json")
 orchestrator = ProductLaunchOrchestrator()
+
+@app.route('/auth/login', methods=['POST'])
+def login():
+    """Authenticate user against data/users.json."""
+    data = request.json or {}
+    username = data.get('username', '').strip()
+    password = data.get('password', '')
+
+    if not username or not password:
+        return jsonify({"success": False, "error": "Username and password required"}), 400
+
+    try:
+        with open(USERS_PATH, "r") as f:
+            users = json.load(f)
+    except Exception:
+        return jsonify({"success": False, "error": "User database not found"}), 500
+
+    for user in users:
+        if user["username"] == username and user["password"] == password:
+            return jsonify({
+                "success": True,
+                "user": {"username": user["username"], "name": user["name"], "role": user["role"]}
+            })
+
+    return jsonify({"success": False, "error": "Invalid username or password"}), 401
 
 @app.route('/simulate', methods=['POST'])
 def simulate():

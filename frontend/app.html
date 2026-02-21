@@ -10,17 +10,36 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        // Auth guard — redirect to login if not authenticated
+        if (!sessionStorage.getItem('datadogs_user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
 </head>
 
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <div class="logo">
-                <h1>🚀 DataDogs</h1>
+            <div class="header-row">
+                <div class="logo">
+                    <h1>🚀 DataDogs</h1>
+                </div>
+                <div class="user-badge" id="userBadge"></div>
             </div>
             <p class="tagline">AI-Powered Multi-Agent Product Launch OS</p>
         </header>
+        <script>
+            // Show user badge + logout
+            (function () {
+                const raw = sessionStorage.getItem('datadogs_user');
+                if (!raw) return;
+                const user = JSON.parse(raw);
+                const badge = document.getElementById('userBadge');
+                badge.innerHTML = `<span class="user-name">👤 ${user.name || user.username}</span><button class="logout-btn" onclick="sessionStorage.removeItem('datadogs_user'); window.location.href='login.html';">Logout</button>`;
+            })();
+        </script>
 
         <!-- Input Section -->
         <section class="input-section">

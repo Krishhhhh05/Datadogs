@@ -1,0 +1,14 @@
+[
+    {
+        "username": "admin",
+        "password": "admin123",
+        "name": "Admin User",
+        "role": "admin"
+    },
+    {
+        "username": "datadogs",
+        "password": "launch2026",
+        "name": "DataDogs Team",
+        "role": "analyst"
+    }
+]
