@@ -866,5 +866,67 @@
         "change": 0.0032
       }
     }
+  },
+  {
+    "run_id": 15,
+    "timestamp": "2026-02-21T16:04:58.971423",
+    "product_idea_summary": "Description: hi",
+    "decision": "NO-GO",
+    "agents": {
+      "Market Analyzer": {
+        "credibility": 0.8737,
+        "previous": 0.8715,
+        "normalized_error": 0.1069,
+        "change": 0.0022
+      },
+      "Customer Insight Specialist": {
+        "credibility": 0.8725,
+        "previous": 0.8732,
+        "normalized_error": 0.1343,
+        "change": -0.0007
+      },
+      "Competitive Intelligence lead": {
+        "credibility": 0.8717,
+        "previous": 0.8675,
+        "normalized_error": 0.0908,
+        "change": 0.0042
+      },
+      "Revenue Architect": {
+        "credibility": 0.8596,
+        "previous": 0.8674,
+        "normalized_error": 0.2111,
+        "change": -0.0078
+      },
+      "Pricing Strategist": {
+        "credibility": 0.8494,
+        "previous": 0.8573,
+        "normalized_error": 0.2213,
+        "change": -0.0079
+      },
+      "Risk Assessment Officer": {
+        "credibility": 0.904,
+        "previous": 0.8965,
+        "normalized_error": 0.0283,
+        "change": 0.0075
+      },
+      "GTM Strategist": {
+        "credibility": 0.8867,
+        "previous": 0.8834,
+        "normalized_error": 0.0835,
+        "change": 0.0033
+      },
+      "Product Roadmap lead": {
+        "credibility": 0.8834,
+        "previous": 0.8805,
+        "normalized_error": 0.0901,
+        "change": 0.0029
+      },
+      "Launch Director": {
+        "credibility": 0.8689,
+        "previous": 0.8866,
+        "normalized_error": 0.2909,
+        "change": -0.0177
+      }
+    }
   }
 ]

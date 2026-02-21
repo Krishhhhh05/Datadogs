@@ -1,0 +1,1292 @@
+{
+  "market": {
+    "market_readiness_score": 78,
+    "market_conditions": [
+      {
+        "trend": "AI Portfolio Management",
+        "growth_rate": "Moderate",
+        "analysis": "Emerging search interest with gradual adoption curve."
+      },
+      {
+        "trend": "Robo Advisory Growth",
+        "growth_rate": "Steady",
+        "analysis": "Consistent demand with established market presence."
+      },
+      {
+        "trend": "Fintech Integration",
+        "growth_rate": "High",
+        "analysis": "Strong institutional and retail adoption accelerating."
+      },
+      {
+        "trend": "Regulatory Acceptance",
+        "growth_rate": "Medium",
+        "analysis": "Increasing regulatory clarity supporting market expansion."
+      },
+      {
+        "trend": "Cost Reduction Demand",
+        "growth_rate": "High",
+        "analysis": "Rising demand for lower-cost investment management solutions."
+      }
+    ],
+    "market_size": [
+      {
+        "label": "TAM",
+        "value": 450000000000
+      },
+      {
+        "label": "SAM",
+        "value": 85000000000
+      },
+      {
+        "label": "SOM",
+        "value": 2100000000
+      }
+    ],
+    "google_trends": {
+      "keywords": [
+        "AI portfolio management",
+        "robo advisor",
+        "automated investing",
+        "algorithmic trading",
+        "financial technology"
+      ],
+      "data": {
+        "dates": [
+          "2025-02-16",
+          "2025-02-23",
+          "2025-03-02",
+          "2025-03-09",
+          "2025-03-16",
+          "2025-03-23",
+          "2025-03-30",
+          "2025-04-06",
+          "2025-04-13",
+          "2025-04-20",
+          "2025-04-27",
+          "2025-05-04",
+          "2025-05-11",
+          "2025-05-18",
+          "2025-05-25",
+          "2025-06-01",
+          "2025-06-08",
+          "2025-06-15",
+          "2025-06-22",
+          "2025-06-29",
+          "2025-07-06",
+          "2025-07-13",
+          "2025-07-20",
+          "2025-07-27",
+          "2025-08-03",
+          "2025-08-10",
+          "2025-08-17",
+          "2025-08-24",
+          "2025-08-31",
+          "2025-09-07",
+          "2025-09-14",
+          "2025-09-21",
+          "2025-09-28",
+          "2025-10-05",
+          "2025-10-12",
+          "2025-10-19",
+          "2025-10-26",
+          "2025-11-02",
+          "2025-11-09",
+          "2025-11-16",
+          "2025-11-23",
+          "2025-11-30",
+          "2025-12-07",
+          "2025-12-14",
+          "2025-12-21",
+          "2025-12-28",
+          "2026-01-04",
+          "2026-01-11",
+          "2026-01-18",
+          "2026-01-25",
+          "2026-02-01",
+          "2026-02-08",
+          "2026-02-15"
+        ],
+        "AI portfolio management": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          2,
+          3,
+          4,
+          3,
+          2,
+          2,
+          3,
+          3,
+          3,
+          4,
+          8,
+          6,
+          5,
+          5,
+          4,
+          5,
+          6,
+          6,
+          5,
+          5,
+          4,
+          5,
+          5,
+          5,
+          6,
+          5,
+          6,
+          5,
+          5,
+          4,
+          3,
+          4,
+          5,
+          6,
+          5,
+          6,
+          2,
+          1
+        ],
+        "robo advisor": [
+          2,
+          3,
+          3,
+          3,
+          2,
+          3,
+          3,
+          3,
+          2,
+          2,
+          2,
+          2,
+          3,
+          2,
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          4,
+          6,
+          7,
+          6,
+          5,
+          5,
+          5,
+          5,
+          6,
+          6,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          4,
+          4,
+          4,
+          5,
+          5,
+          5,
+          6,
+          5,
+          3,
+          3
+        ],
+        "automated investing": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          2,
+          2,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          1,
+          1
+        ],
+        "algorithmic trading": [
+          3,
+          3,
+          2,
+          2,
+          3,
+          3,
+          2,
+          2,
+          3,
+          3,
+          2,
+          2,
+          2,
+          3,
+          3,
+          4,
+          5,
+          5,
+          5,
+          4,
+          4,
+          4,
+          5,
+          5,
+          10,
+          16,
+          14,
+          11,
+          11,
+          11,
+          10,
+          13,
+          14,
+          12,
+          12,
+          13,
+          12,
+          12,
+          12,
+          13,
+          15,
+          15,
+          13,
+          12,
+          9,
+          10,
+          8,
+          10,
+          10,
+          11,
+          11,
+          5,
+          5
+        ],
+        "financial technology": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          11,
+          10,
+          10,
+          10,
+          11,
+          12,
+          10,
+          10,
+          10,
+          9,
+          15,
+          24,
+          22,
+          21,
+          17,
+          18,
+          24,
+          21,
+          29,
+          45,
+          49,
+          44,
+          40,
+          51,
+          39,
+          42,
+          55,
+          46,
+          40,
+          36,
+          35,
+          39,
+          37,
+          44,
+          53,
+          45,
+          57,
+          53,
+          54,
+          34,
+          35,
+          46,
+          64,
+          64,
+          77,
+          91,
+          81,
+          100
+        ]
+      }
+    }
+  },
+  "comp": {
+    "competitor_scores": [
+      {
+        "name": "Proposed Product",
+        "price_score": 8,
+        "features_score": 9,
+        "usability_score": 8,
+        "brand_score": 2,
+        "innovation_score": 10
+      },
+      {
+        "name": "BlackRock",
+        "price_score": 4,
+        "features_score": 9,
+        "usability_score": 6,
+        "brand_score": 10,
+        "innovation_score": 6
+      },
+      {
+        "name": "Betterment",
+        "price_score": 7,
+        "features_score": 8,
+        "usability_score": 9,
+        "brand_score": 6,
+        "innovation_score": 8
+      },
+      {
+        "name": "Charles Schwab",
+        "price_score": 6,
+        "features_score": 8,
+        "usability_score": 7,
+        "brand_score": 9,
+        "innovation_score": 5
+      }
+    ],
+    "competitive_analysis": [
+      {
+        "name": "BlackRock",
+        "description": "World's largest asset manager with $10+ trillion AUM, offering Aladdin AI platform for institutional clients.",
+        "strengths": [
+          "Massive scale and resources",
+          "Advanced AI infrastructure",
+          "Institutional trust",
+          "Strong financial performance"
+        ],
+        "weaknesses": [
+          "Limited retail AI offerings",
+          "Complex user interface",
+          "High fees",
+          "Slow to adapt to consumer needs"
+        ]
+      },
+      {
+        "name": "Betterment",
+        "description": "Leading robo-advisor focused on automated investing with goal-based portfolio management.",
+        "strengths": [
+          "User-friendly interface",
+          "Low fees",
+          "Strong mobile app",
+          "Behavioral coaching features"
+        ],
+        "weaknesses": [
+          "Limited customization",
+          "Basic AI capabilities",
+          "Smaller scale",
+          "Declining search interest"
+        ]
+      },
+      {
+        "name": "Charles Schwab",
+        "description": "Major brokerage offering robo-advisory services through Schwab Intelligent Portfolios with zero advisory fees.",
+        "strengths": [
+          "Zero advisory fees",
+          "Strong brand recognition",
+          "Comprehensive platform",
+          "High profit margins"
+        ],
+        "weaknesses": [
+          "Basic AI features",
+          "Complex platform for beginners",
+          "Revenue model relies on cash allocation",
+          "Traditional approach"
+        ]
+      }
+    ],
+    "competitor_financials": [
+      {
+        "symbol": "BLK",
+        "name": "BlackRock, Inc.",
+        "sector": "Financial Services",
+        "industry": "Asset Management",
+        "country": "United States",
+        "employeeCount": null,
+        "marketCap": 169679241216,
+        "totalRevenue": 24216000512,
+        "ebitda": 9673332736,
+        "revenueGrowth": 0.234,
+        "profitMargins": 0.22930999,
+        "grossMargins": 0.49752,
+        "trailingPE": 30.96376,
+        "priceToBook": 3.055714,
+        "currentPrice": 1093.64,
+        "fiftyTwoWeekHigh": 1219.94,
+        "fiftyTwoWeekLow": 773.74,
+        "beta": 1.488,
+        "marketCap_fmt": "$169.68B",
+        "totalRevenue_fmt": "$24.22B",
+        "revenueGrowth_fmt": "23.4%",
+        "profitMargins_fmt": "22.9%",
+        "priceHistory": [
+          {
+            "date": "2025-02-17",
+            "close": 954.65
+          },
+          {
+            "date": "2025-02-24",
+            "close": 958.14
+          },
+          {
+            "date": "2025-03-03",
+            "close": 927.9
+          },
+          {
+            "date": "2025-03-10",
+            "close": 915.01
+          },
+          {
+            "date": "2025-03-17",
+            "close": 937.7
+          },
+          {
+            "date": "2025-03-24",
+            "close": 932.75
+          },
+          {
+            "date": "2025-03-31",
+            "close": 810.5
+          },
+          {
+            "date": "2025-04-07",
+            "close": 865.83
+          },
+          {
+            "date": "2025-04-14",
+            "close": 862.87
+          },
+          {
+            "date": "2025-04-21",
+            "close": 894.31
+          },
+          {
+            "date": "2025-04-28",
+            "close": 915.51
+          },
+          {
+            "date": "2025-05-05",
+            "close": 909.83
+          },
+          {
+            "date": "2025-05-12",
+            "close": 975.12
+          },
+          {
+            "date": "2025-05-19",
+            "close": 948.98
+          },
+          {
+            "date": "2025-05-26",
+            "close": 965.45
+          },
+          {
+            "date": "2025-06-02",
+            "close": 974.47
+          },
+          {
+            "date": "2025-06-09",
+            "close": 962.57
+          },
+          {
+            "date": "2025-06-16",
+            "close": 965.16
+          },
+          {
+            "date": "2025-06-23",
+            "close": 1037.84
+          },
+          {
+            "date": "2025-06-30",
+            "close": 1071.85
+          },
+          {
+            "date": "2025-07-07",
+            "close": 1091.15
+          },
+          {
+            "date": "2025-07-14",
+            "close": 1093.08
+          },
+          {
+            "date": "2025-07-21",
+            "close": 1112.59
+          },
+          {
+            "date": "2025-07-28",
+            "close": 1081.41
+          },
+          {
+            "date": "2025-08-04",
+            "close": 1114.26
+          },
+          {
+            "date": "2025-08-11",
+            "close": 1124.2
+          },
+          {
+            "date": "2025-08-18",
+            "close": 1137.24
+          },
+          {
+            "date": "2025-08-25",
+            "close": 1116.41
+          },
+          {
+            "date": "2025-09-01",
+            "close": 1088.69
+          },
+          {
+            "date": "2025-09-08",
+            "close": 1117.97
+          },
+          {
+            "date": "2025-09-15",
+            "close": 1137.31
+          },
+          {
+            "date": "2025-09-22",
+            "close": 1150.85
+          },
+          {
+            "date": "2025-09-29",
+            "close": 1155.07
+          },
+          {
+            "date": "2025-10-06",
+            "close": 1126.88
+          },
+          {
+            "date": "2025-10-13",
+            "close": 1155.54
+          },
+          {
+            "date": "2025-10-20",
+            "close": 1131.12
+          },
+          {
+            "date": "2025-10-27",
+            "close": 1077.57
+          },
+          {
+            "date": "2025-11-03",
+            "close": 1076.96
+          },
+          {
+            "date": "2025-11-10",
+            "close": 1052.82
+          },
+          {
+            "date": "2025-11-17",
+            "close": 1009.8
+          },
+          {
+            "date": "2025-11-24",
+            "close": 1042.23
+          },
+          {
+            "date": "2025-12-01",
+            "close": 1066.97
+          },
+          {
+            "date": "2025-12-08",
+            "close": 1089.09
+          },
+          {
+            "date": "2025-12-15",
+            "close": 1060.17
+          },
+          {
+            "date": "2025-12-22",
+            "close": 1088.11
+          },
+          {
+            "date": "2025-12-29",
+            "close": 1085.06
+          },
+          {
+            "date": "2026-01-05",
+            "close": 1085.1
+          },
+          {
+            "date": "2026-01-12",
+            "close": 1163.17
+          },
+          {
+            "date": "2026-01-19",
+            "close": 1129.91
+          },
+          {
+            "date": "2026-01-26",
+            "close": 1118.94
+          },
+          {
+            "date": "2026-02-02",
+            "close": 1056.38
+          },
+          {
+            "date": "2026-02-09",
+            "close": 1071.51
+          },
+          {
+            "date": "2026-02-16",
+            "close": 1093.64
+          }
+        ]
+      },
+      {
+        "symbol": "SCHW",
+        "name": "Charles Schwab Corporation (The",
+        "sector": "Financial Services",
+        "industry": "Capital Markets",
+        "country": "United States",
+        "employeeCount": 33000,
+        "marketCap": 170685071360,
+        "totalRevenue": 23921000448,
+        "ebitda": null,
+        "revenueGrowth": 0.189,
+        "profitMargins": 0.37005,
+        "grossMargins": 0.97407997,
+        "trailingPE": 20.221504,
+        "priceToBook": 3.9417312,
+        "currentPrice": 94.03,
+        "fiftyTwoWeekHigh": 107.5,
+        "fiftyTwoWeekLow": 65.88,
+        "beta": 0.909,
+        "marketCap_fmt": "$170.69B",
+        "totalRevenue_fmt": "$23.92B",
+        "revenueGrowth_fmt": "18.9%",
+        "profitMargins_fmt": "37.0%",
+        "priceHistory": [
+          {
+            "date": "2025-02-17",
+            "close": 79.46
+          },
+          {
+            "date": "2025-02-24",
+            "close": 78.56
+          },
+          {
+            "date": "2025-03-03",
+            "close": 73.72
+          },
+          {
+            "date": "2025-03-10",
+            "close": 76.17
+          },
+          {
+            "date": "2025-03-17",
+            "close": 77.44
+          },
+          {
+            "date": "2025-03-24",
+            "close": 76.86
+          },
+          {
+            "date": "2025-03-31",
+            "close": 68.22
+          },
+          {
+            "date": "2025-04-07",
+            "close": 76.02
+          },
+          {
+            "date": "2025-04-14",
+            "close": 75.22
+          },
+          {
+            "date": "2025-04-21",
+            "close": 78.97
+          },
+          {
+            "date": "2025-04-28",
+            "close": 82.1
+          },
+          {
+            "date": "2025-05-05",
+            "close": 83.44
+          },
+          {
+            "date": "2025-05-12",
+            "close": 87.89
+          },
+          {
+            "date": "2025-05-19",
+            "close": 86.61
+          },
+          {
+            "date": "2025-05-26",
+            "close": 87.55
+          },
+          {
+            "date": "2025-06-02",
+            "close": 87.46
+          },
+          {
+            "date": "2025-06-09",
+            "close": 86.58
+          },
+          {
+            "date": "2025-06-16",
+            "close": 88.41
+          },
+          {
+            "date": "2025-06-23",
+            "close": 89.17
+          },
+          {
+            "date": "2025-06-30",
+            "close": 90.66
+          },
+          {
+            "date": "2025-07-07",
+            "close": 91.14
+          },
+          {
+            "date": "2025-07-14",
+            "close": 94.94
+          },
+          {
+            "date": "2025-07-21",
+            "close": 96.19
+          },
+          {
+            "date": "2025-07-28",
+            "close": 94.67
+          },
+          {
+            "date": "2025-08-04",
+            "close": 96.21
+          },
+          {
+            "date": "2025-08-11",
+            "close": 95.52
+          },
+          {
+            "date": "2025-08-18",
+            "close": 95.24
+          },
+          {
+            "date": "2025-08-25",
+            "close": 95.25
+          },
+          {
+            "date": "2025-09-01",
+            "close": 91.48
+          },
+          {
+            "date": "2025-09-08",
+            "close": 92.96
+          },
+          {
+            "date": "2025-09-15",
+            "close": 93.75
+          },
+          {
+            "date": "2025-09-22",
+            "close": 94.87
+          },
+          {
+            "date": "2025-09-29",
+            "close": 93.5
+          },
+          {
+            "date": "2025-10-06",
+            "close": 91.39
+          },
+          {
+            "date": "2025-10-13",
+            "close": 93.56
+          },
+          {
+            "date": "2025-10-20",
+            "close": 93.84
+          },
+          {
+            "date": "2025-10-27",
+            "close": 93.94
+          },
+          {
+            "date": "2025-11-03",
+            "close": 94.65
+          },
+          {
+            "date": "2025-11-10",
+            "close": 93.81
+          },
+          {
+            "date": "2025-11-17",
+            "close": 90.21
+          },
+          {
+            "date": "2025-11-24",
+            "close": 92.42
+          },
+          {
+            "date": "2025-12-01",
+            "close": 93.5
+          },
+          {
+            "date": "2025-12-08",
+            "close": 96.32
+          },
+          {
+            "date": "2025-12-15",
+            "close": 98.49
+          },
+          {
+            "date": "2025-12-22",
+            "close": 101.55
+          },
+          {
+            "date": "2025-12-29",
+            "close": 101.23
+          },
+          {
+            "date": "2026-01-05",
+            "close": 99.83
+          },
+          {
+            "date": "2026-01-12",
+            "close": 103.47
+          },
+          {
+            "date": "2026-01-19",
+            "close": 101.84
+          },
+          {
+            "date": "2026-01-26",
+            "close": 103.57
+          },
+          {
+            "date": "2026-02-02",
+            "close": 104.73
+          },
+          {
+            "date": "2026-02-09",
+            "close": 93.4
+          },
+          {
+            "date": "2026-02-16",
+            "close": 94.03
+          }
+        ]
+      }
+    ],
+    "competitor_trends": {
+      "keywords": [
+        "BlackRock",
+        "Betterment",
+        "Wealthfront",
+        "Charles Schwab",
+        "Vanguard"
+      ],
+      "data": {
+        "dates": [
+          "2025-02-16",
+          "2025-02-23",
+          "2025-03-02",
+          "2025-03-09",
+          "2025-03-16",
+          "2025-03-23",
+          "2025-03-30",
+          "2025-04-06",
+          "2025-04-13",
+          "2025-04-20",
+          "2025-04-27",
+          "2025-05-04",
+          "2025-05-11",
+          "2025-05-18",
+          "2025-05-25",
+          "2025-06-01",
+          "2025-06-08",
+          "2025-06-15",
+          "2025-06-22",
+          "2025-06-29",
+          "2025-07-06",
+          "2025-07-13",
+          "2025-07-20",
+          "2025-07-27",
+          "2025-08-03",
+          "2025-08-10",
+          "2025-08-17",
+          "2025-08-24",
+          "2025-08-31",
+          "2025-09-07",
+          "2025-09-14",
+          "2025-09-21",
+          "2025-09-28",
+          "2025-10-05",
+          "2025-10-12",
+          "2025-10-19",
+          "2025-10-26",
+          "2025-11-02",
+          "2025-11-09",
+          "2025-11-16",
+          "2025-11-23",
+          "2025-11-30",
+          "2025-12-07",
+          "2025-12-14",
+          "2025-12-21",
+          "2025-12-28",
+          "2026-01-04",
+          "2026-01-11",
+          "2026-01-18",
+          "2026-01-25",
+          "2026-02-01",
+          "2026-02-08",
+          "2026-02-15"
+        ],
+        "BlackRock": [
+          18,
+          18,
+          31,
+          20,
+          19,
+          17,
+          19,
+          19,
+          15,
+          14,
+          14,
+          14,
+          15,
+          15,
+          16,
+          18,
+          19,
+          19,
+          17,
+          21,
+          20,
+          22,
+          20,
+          29,
+          34,
+          40,
+          34,
+          29,
+          28,
+          31,
+          30,
+          33,
+          37,
+          37,
+          39,
+          32,
+          26,
+          27,
+          27,
+          30,
+          26,
+          27,
+          24,
+          23,
+          18,
+          18,
+          25,
+          28,
+          28,
+          30,
+          30,
+          20,
+          20
+        ],
+        "Betterment": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          3,
+          3,
+          2,
+          3,
+          3,
+          2,
+          3,
+          4,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          2,
+          3,
+          3,
+          2,
+          2
+        ],
+        "Wealthfront": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          3,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "Charles Schwab": [
+          31,
+          30,
+          30,
+          29,
+          27,
+          27,
+          32,
+          42,
+          27,
+          25,
+          25,
+          23,
+          29,
+          37,
+          33,
+          27,
+          27,
+          24,
+          28,
+          27,
+          27,
+          32,
+          30,
+          30,
+          32,
+          33,
+          30,
+          29,
+          27,
+          29,
+          31,
+          31,
+          32,
+          31,
+          30,
+          29,
+          29,
+          27,
+          29,
+          26,
+          20,
+          27,
+          26,
+          26,
+          24,
+          26,
+          30,
+          29,
+          27,
+          29,
+          29,
+          27,
+          24
+        ],
+        "Vanguard": [
+          63,
+          64,
+          66,
+          66,
+          62,
+          61,
+          73,
+          85,
+          62,
+          57,
+          55,
+          53,
+          56,
+          52,
+          57,
+          60,
+          56,
+          50,
+          60,
+          61,
+          61,
+          65,
+          67,
+          67,
+          81,
+          100,
+          85,
+          79,
+          81,
+          79,
+          86,
+          79,
+          82,
+          80,
+          76,
+          78,
+          76,
+          77,
+          78,
+          77,
+          75,
+          90,
+          80,
+          82,
+          74,
+          81,
+          91,
+          88,
+          87,
+          91,
+          91,
+          67,
+          68
+        ]
+      }
+    }
+  }
+}

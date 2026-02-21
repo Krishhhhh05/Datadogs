@@ -39,7 +39,8 @@ class GoogleTrendsService:
                 df = self.pytrends.interest_over_time()
                 
                 if df is None or df.empty:
-                    return {kw: [] for kw in keywords}
+                    logger.warning(f"PyTrends returned empty DataFrame for {keywords}. Falling back to simulated data for demo.")
+                    return self._generate_fallback_data(keywords)
 
                 # Drop the isPartial column if it exists
                 if 'isPartial' in df.columns:
@@ -53,7 +54,8 @@ class GoogleTrendsService:
                     if kw in df.columns:
                         result[kw] = [int(v) for v in df[kw].tolist()]
                     else:
-                        result[kw] = []
+                        # Pad with zeros if keyword was dropped by Google Trends
+                        result[kw] = [0] * len(df.index)
 
                 return result
 
